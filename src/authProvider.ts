@@ -1,4 +1,4 @@
-import { AuthBindings } from "@refinedev/core";
+import type { AuthBindings } from "@refinedev/core";
 
 export const TOKEN_KEY = "refine-auth";
 

@@ -1,28 +1,28 @@
 import {
-  Refine,
-  GitHubBanner,
-  WelcomePage,
-  Authenticated,
   AuthPage,
+  Authenticated,
   ErrorComponent,
+  GitHubBanner,
+  Refine,
+  WelcomePage,
 } from "@refinedev/core";
 import { DevtoolsPanel, DevtoolsProvider } from "@refinedev/devtools";
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
 
-import dataProvider from "@refinedev/simple-rest";
-import { BrowserRouter, Route, Routes, Outlet } from "react-router-dom";
 import routerBindings, {
   NavigateToResource,
   CatchAllNavigate,
   UnsavedChangesNotifier,
   DocumentTitleHandler,
 } from "@refinedev/react-router-v6";
-import { Layout } from "./components/layout";
+import dataProvider from "@refinedev/simple-rest";
+import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import "./App.css";
+import { authProvider } from "./authProvider";
+import { Layout } from "./components/layout";
+import { ForgotPassword } from "./pages/forgotPassword";
 import { Login } from "./pages/login";
 import { Register } from "./pages/register";
-import { ForgotPassword } from "./pages/forgotPassword";
-import { authProvider } from "./authProvider";
 
 function App() {
   return (
