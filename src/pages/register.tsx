@@ -1,5 +1,5 @@
 import { AuthPage } from "@refinedev/core";
 
-export const Register = () => {
+export function Register() {
   return <AuthPage type="register" />;
-};
+}

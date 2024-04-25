@@ -1,9 +1,10 @@
 import { AuthPage } from "@refinedev/core";
 
-export const Login = () => {
+export function Login() {
   return (
     <AuthPage
       type="login"
+      forgotPasswordLink=""
       renderContent={(content) => (
         <div>
           <p
@@ -23,4 +24,4 @@ export const Login = () => {
       )}
     />
   );
-};
+}
