@@ -154,7 +154,7 @@ function Sidebar() {
         <nav className="grid gap-2 font-medium text-lg">
           <span className="flex items-center gap-2 font-semibold text-lg">
             <CarFront size={24} />
-            <span className="sr-only">Acme Inc</span>
+            <span className="sr-only">S.A.F.E.</span>
           </span>
           {menuItems.map((item) => (
             <Link
