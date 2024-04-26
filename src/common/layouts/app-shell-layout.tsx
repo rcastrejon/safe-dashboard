@@ -11,10 +11,51 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 import { type BreadcrumbsType, useBreadcrumb } from "@refinedev/core";
+import { type ITreeMenu, useMenu } from "@refinedev/core";
 import { CarFront } from "lucide-react";
 import React from "react";
+import { useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { useFlatMenu } from "./use-flat-menu";
+
+/*
+ * This file exports the `AppShellLayout` component which is the main layout
+ * component for the application once the user is authenticated. This layout
+ * should wrap all the pages that are part of the application in the Route
+ * component in App.tsx.
+ *
+ * The layout consists of a sidebar, a header, and a main content area. The
+ * sidebar is collapsible and contains the main navigation menu. The header
+ * contains the breadcrumb navigation.
+ */
+
+function useFlatMenu() {
+  const { menuItems, ...rest } = useMenu();
+  /*
+   * The resources list in App.tsx is structured in a way that every resource
+   * is nested in the Dashboard resource, which is the root resource. This
+   * function flattens the nested resources into a single array.
+   */
+  const flatMenuItems = useMemo(() => {
+    const result: ITreeMenu[] = [];
+    const queue: ITreeMenu[] = [...menuItems];
+
+    while (queue.length > 0) {
+      const obj = queue.shift();
+      if (!obj) throw new Error("Object is undefined");
+      result.push(obj);
+
+      if (obj.children) {
+        queue.push(...obj.children);
+      }
+    }
+
+    return result;
+  }, [menuItems]);
+  return {
+    menuItems: flatMenuItems,
+    ...rest,
+  };
+}
 
 export function AppShellLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -151,6 +192,14 @@ function ResourcesMenu() {
     </Link>
   ));
 }
+
+/*
+ * The purpose of this component is to wrap the icon, given by the resources
+ * attribute from Refine, in order to customize the styles. We can not set an
+ * static size in the original icon component because different use cases may
+ * require different sizes. For example, the non-collapsible sidebar uses a
+ * smaller size than the collapsible sidebar.
+ */
 
 interface IconWrapperProps extends React.HTMLAttributes<SVGElement> {
   icon: React.ReactNode;
