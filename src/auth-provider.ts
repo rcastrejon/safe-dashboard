@@ -1,4 +1,5 @@
 import type { AuthProvider } from "@refinedev/core";
+import { apiFetch } from "./lib/utils";
 
 export const TOKEN_KEY = import.meta.env.VITE_SESSION_TOKEN_KEY;
 
@@ -8,36 +9,6 @@ type Session = {
   id: string;
   userId: string;
 };
-
-class NetworkError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "Network Error";
-  }
-}
-
-async function apiFetch(endpoint: `/${string}`, init?: RequestInit) {
-  // The env variable is injected by Vite is expected to not end with a slash,
-  // so we remove it if it's there by using the URL constructor and then
-  // getting the origin property.
-  const apiURL = new URL(import.meta.env.VITE_API_ORIGIN);
-  // Set the Authorization header if a session token is present in local
-  // storage.
-  const { headers: headersInit, ...rest } = init ?? {};
-  const headers = new Headers(headersInit);
-  const session = localStorage.getItem(TOKEN_KEY);
-  if (session) {
-    headers.set("Authorization", `Bearer ${session}`);
-  }
-  try {
-    return await fetch(`${apiURL.origin}${endpoint}`, {
-      headers,
-      ...rest,
-    });
-  } catch (_e) {
-    throw new NetworkError("Could not communicate with the server.");
-  }
-}
 
 export const authProvider: AuthProvider = {
   register: async ({ email, password, invitation }) => {

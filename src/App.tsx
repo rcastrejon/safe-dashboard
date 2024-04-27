@@ -8,12 +8,12 @@ import routerBindings, {
   UnsavedChangesNotifier,
   DocumentTitleHandler,
 } from "@refinedev/react-router-v6";
-import dataProvider from "@refinedev/simple-rest";
 import { Home, TicketSlash } from "lucide-react";
 import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import { authProvider } from "./auth-provider";
 import { AppShellLayout } from "./common/layouts/app-shell-layout";
 import { AuthLayout } from "./common/layouts/auth-layout";
+import { dataProvider } from "./data-provider";
 import { customTitleHandler } from "./lib/utils";
 import { notificationProvider } from "./notification-provider";
 import { Login } from "./pages/_auth.login";
@@ -28,7 +28,7 @@ function App() {
       <RefineKbarProvider>
         <DevtoolsProvider>
           <Refine
-            dataProvider={dataProvider("https://api.fake-rest.refine.dev")}
+            dataProvider={dataProvider(import.meta.env.VITE_API_ORIGIN)}
             routerProvider={routerBindings}
             authProvider={authProvider}
             notificationProvider={notificationProvider}
