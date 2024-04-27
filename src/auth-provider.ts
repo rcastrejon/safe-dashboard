@@ -11,19 +11,18 @@ type Session = {
 
 async function apiFetch(endpoint: `/${string}`, init?: RequestInit) {
   // The env variable is injected by Vite is expected to not end with a slash,
-  // so we remove it if it's there.
-  let api = import.meta.env.VITE_API_HOST;
-  api = api.endsWith("/") ? api.slice(0, -1) : api;
-
+  // so we remove it if it's there by using the URL constructor and then
+  // getting the origin property.
+  const apiURL = new URL(import.meta.env.VITE_API_ORIGIN);
   // Set the Authorization header if a session token is present in local
-  // storage
+  // storage.
   const { headers: headersInit, ...rest } = init ?? {};
   const headers = new Headers(headersInit);
   const session = localStorage.getItem(TOKEN_KEY);
   if (session) {
     headers.set("Authorization", `Bearer ${session}`);
   }
-  return await fetch(`${api}${endpoint}`, {
+  return await fetch(`${apiURL.origin}${endpoint}`, {
     headers,
     ...rest,
   });
