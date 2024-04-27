@@ -38,9 +38,9 @@ export function Login() {
   }
 
   return (
-    <Card className="sm:mx-auto sm:w-full sm:max-w-sm">
+    <Card className="rounded-none border-x-0 sm:mx-auto sm:w-full sm:max-w-sm sm:rounded-lg sm:border-x">
       <CardHeader>
-        <CardTitle className="text-2xl">Login</CardTitle>
+        <CardTitle>Login</CardTitle>
         <CardDescription>
           Enter your email below to login to your account
         </CardDescription>

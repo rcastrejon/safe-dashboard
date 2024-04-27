@@ -58,7 +58,7 @@ function useFlatMenu() {
 
 export function AppShellLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="grid min-h-screen w-full lg:grid-cols-[280px_1fr]">
+    <div className="grid min-h-screen w-full grid-cols-1 lg:grid-cols-[280px_1fr]">
       <div className="hidden border-r bg-muted/40 lg:block">
         <div className="flex h-full max-h-screen flex-col gap-2">
           <div className="flex h-[60px] items-center border-b px-4 lg:px-6">
@@ -74,7 +74,7 @@ export function AppShellLayout({ children }: { children: React.ReactNode }) {
         </div>
       </div>
       <div className="flex flex-col">
-        <header className="flex h-[60px] items-center gap-4 border-b bg-muted/40 px-4 md:px-6">
+        <header className="sticky top-0 z-30 flex h-[60px] items-center gap-4 border-b bg-background px-4 lg:static lg:bg-muted/40 md:px-6">
           <Sidebar />
           <Breadcrumb />
         </header>
