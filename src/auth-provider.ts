@@ -9,6 +9,13 @@ type Session = {
   userId: string;
 };
 
+class NetworkError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "Network Error";
+  }
+}
+
 async function apiFetch(endpoint: `/${string}`, init?: RequestInit) {
   // The env variable is injected by Vite is expected to not end with a slash,
   // so we remove it if it's there by using the URL constructor and then
@@ -22,10 +29,14 @@ async function apiFetch(endpoint: `/${string}`, init?: RequestInit) {
   if (session) {
     headers.set("Authorization", `Bearer ${session}`);
   }
-  return await fetch(`${apiURL.origin}${endpoint}`, {
-    headers,
-    ...rest,
-  });
+  try {
+    return await fetch(`${apiURL.origin}${endpoint}`, {
+      headers,
+      ...rest,
+    });
+  } catch (_e) {
+    throw new NetworkError("Could not communicate with the server.");
+  }
 }
 
 export const authProvider: AuthProvider = {
@@ -37,17 +48,14 @@ export const authProvider: AuthProvider = {
         "Content-Type": "application/json",
       },
     });
-    type JSONResponse = {
-      error?: string;
-      session?: Session;
-    };
-    const { error, session }: JSONResponse = await result.json();
-    if (error || !session) {
+    if (!result.ok) {
+      const { error }: { error: string } = await result.json();
       return {
         success: false,
         error: new Error(error),
       };
     }
+    const { session }: { session: Session } = await result.json();
     localStorage.setItem(TOKEN_KEY, session.id);
     return {
       success: true,
@@ -65,17 +73,14 @@ export const authProvider: AuthProvider = {
         "Content-Type": "application/json",
       },
     });
-    type JSONResponse = {
-      session?: Session;
-      error?: string;
-    };
-    const { session, error }: JSONResponse = await result.json();
-    if (error || !session) {
+    if (!result.ok) {
+      const { error }: { error: string } = await result.json();
       return {
         success: false,
         error: new Error(error),
       };
     }
+    const { session }: { session: Session } = await result.json();
     localStorage.setItem(TOKEN_KEY, session.id);
     return {
       success: true,
@@ -89,12 +94,8 @@ export const authProvider: AuthProvider = {
     const result = await apiFetch("/logout", {
       method: "POST",
     });
-
-    type JSONResponse = {
-      error?: string;
-    };
-    const { error }: JSONResponse = await result.json();
-    if (error) {
+    if (!result.ok) {
+      const { error }: { error: string } = await result.json();
       return {
         success: false,
         error: new Error(error),
@@ -135,6 +136,7 @@ export const authProvider: AuthProvider = {
     return null;
   },
   onError: async (error) => {
+    alert("Checkpoint");
     return {
       logout: true,
       redirectTo: "/login",
