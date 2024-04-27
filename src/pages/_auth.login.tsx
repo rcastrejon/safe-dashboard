@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useLogin } from "@refinedev/core";
 import { Link } from "react-router-dom";
+import { useRef } from "react";
 
 type LoginVariables = {
   email: string;
@@ -18,13 +19,22 @@ type LoginVariables = {
 
 export function Login() {
   const { mutate: login } = useLogin<LoginVariables>();
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  const form = useRef<HTMLFormElement>(null);
+
+  function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (form.current === null) return;
     const values = {
-      email: e.currentTarget.email.value,
-      password: e.currentTarget.password.value,
+      email: form.current.email.value,
+      password: form.current.password.value,
     };
-    login(values);
+    login(values, {
+      onSuccess: (data) => {
+        if (data.success || form.current === null) return;
+        form.current.reset();
+        (form.current.email as HTMLInputElement | undefined)?.focus();
+      },
+    });
   }
 
   return (
@@ -36,7 +46,7 @@ export function Login() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form className="grid gap-4" onSubmit={handleSubmit}>
+        <form className="grid gap-4" onSubmit={handleSubmit} ref={form}>
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
             <Input id="email" name="email" required type="email" />

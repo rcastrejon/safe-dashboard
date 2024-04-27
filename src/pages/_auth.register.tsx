@@ -9,6 +9,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useRegister } from "@refinedev/core";
+import { useRef } from "react";
 import { Link } from "react-router-dom";
 
 type RegisterVariables = {
@@ -19,14 +20,23 @@ type RegisterVariables = {
 
 export function Register() {
   const { mutate: register } = useRegister<RegisterVariables>();
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const form = useRef<HTMLFormElement>(null);
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (form.current === null) return;
     const values = {
-      email: e.currentTarget.email.value,
-      password: e.currentTarget.password.value,
-      invitation: e.currentTarget.invitation.value,
+      email: form.current.email.value,
+      password: form.current.password.value,
+      invitation: form.current.invitation.value,
     };
-    register(values);
+    register(values, {
+      onSuccess: (data) => {
+        if (data.success || form.current === null) return;
+        form.current.reset();
+        (form.current.email as HTMLInputElement | undefined)?.focus();
+      },
+    });
   };
 
   return (
@@ -38,7 +48,7 @@ export function Register() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form className="grid gap-4" onSubmit={handleSubmit}>
+        <form className="grid gap-4" onSubmit={handleSubmit} ref={form}>
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
             <Input id="email" name="email" type="email" required />
