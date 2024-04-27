@@ -1,5 +1,6 @@
+import { useClipboard } from "@/common/use-clipboard";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CardTitle } from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,7 +19,7 @@ import {
 import { useDelete } from "@refinedev/core";
 import { useTable } from "@refinedev/react-table";
 import { type ColumnDef, flexRender } from "@tanstack/react-table";
-import { MoreHorizontal } from "lucide-react";
+import { CirclePlus, MoreHorizontal } from "lucide-react";
 import { useMemo } from "react";
 
 type Invitation = {
@@ -27,6 +28,7 @@ type Invitation = {
 };
 
 export function Invitations() {
+  const { copy } = useClipboard();
   const { mutate: deleteMutate } = useDelete();
   const columns = useMemo<ColumnDef<Invitation>[]>(
     () => [
@@ -54,6 +56,17 @@ export function Invitations() {
                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
                 <DropdownMenuItem
                   onClick={() =>
+                    copy(invitation.id, {
+                      id: `copy-invitation-${invitation.id}`,
+                      message: "Invitation code copied to clipboard.",
+                      type: "success",
+                    })
+                  }
+                >
+                  Copy invitation code
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() =>
                     deleteMutate({
                       resource: "invitations",
                       id: invitation.id,
@@ -70,11 +83,12 @@ export function Invitations() {
         },
       },
     ],
-    [deleteMutate],
+    [deleteMutate, copy],
   );
 
   const {
     getRowModel,
+    getHeaderGroups,
     previousPage,
     getCanPreviousPage,
     nextPage,
@@ -96,54 +110,77 @@ export function Invitations() {
   });
 
   return (
-    <div>
-      <Card>
-        <CardHeader>
-          <CardTitle>Invitations</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Code</TableHead>
-                <TableHead>User ID</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-          <div className="flex items-center justify-end space-x-2 py-4">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => previousPage()}
-              disabled={!getCanPreviousPage()}
-            >
-              Previous
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => nextPage()}
-              disabled={!getCanNextPage()}
-            >
-              Next
-            </Button>
+    <>
+      <div className="flex items-end justify-between">
+        <CardTitle>Invitations</CardTitle>
+        <Button className="font-normal" size="sm">
+          <CirclePlus className="mr-2 h-4 w-4" /> Add Invitation
+        </Button>
+      </div>
+      <div className="flow-root">
+        <div className="-mx-4 overflow-x-auto sm:mx-0">
+          <div className="rounded-none border-y bg-card text-card-foreground shadow-sm sm:rounded-lg sm:border-x">
+            <Table>
+              <TableHeader>
+                {getHeaderGroups().map((headerGroup) => (
+                  <TableRow key={headerGroup.id}>
+                    {headerGroup.headers.map((header) => {
+                      return (
+                        <TableHead
+                          className="bg-muted/40 sm:last:pr-6 sm:first:pl-6"
+                          key={header.id}
+                        >
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(
+                                header.column.columnDef.header,
+                                header.getContext(),
+                              )}
+                        </TableHead>
+                      );
+                    })}
+                  </TableRow>
+                ))}
+              </TableHeader>
+              <TableBody>
+                {getRowModel().rows.map((row) => (
+                  <TableRow key={row.id}>
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell
+                        className="sm:last:pr-6 sm:first:pl-6"
+                        key={cell.id}
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext(),
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </div>
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+        <div className="flex items-center justify-end space-x-2 py-4">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => previousPage()}
+            disabled={!getCanPreviousPage()}
+          >
+            Previous
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => nextPage()}
+            disabled={!getCanNextPage()}
+          >
+            Next
+          </Button>
+        </div>
+      </div>
+    </>
   );
 }

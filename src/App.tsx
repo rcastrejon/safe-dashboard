@@ -24,7 +24,7 @@ import { NotFound } from "./pages/not-found";
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <RefineKbarProvider>
         <DevtoolsProvider>
           <Refine

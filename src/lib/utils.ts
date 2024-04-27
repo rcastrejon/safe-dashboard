@@ -22,8 +22,11 @@ export function customTitleHandler({
 }
 
 export class NetworkError extends Error {
+  statusCode: string;
+
   constructor(message: string) {
     super(message);
+    this.statusCode = "ERR_CONNECTION_REFUSED";
     this.name = "Network Error";
   }
 }
