@@ -9,10 +9,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
-import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 import { type BreadcrumbsType, useBreadcrumb } from "@refinedev/core";
 import { type ITreeMenu, useMenu } from "@refinedev/core";
-import { CarFront } from "lucide-react";
+import { CarFront, Menu } from "lucide-react";
 import React from "react";
 import { useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
@@ -146,7 +145,7 @@ function Sidebar() {
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <Button className="shrink-0 lg:hidden" size="icon" variant="outline">
-          <HamburgerMenuIcon className="h-4 w-4" />
+          <Menu className="h-5 w-5" />
           <span className="sr-only">Toggle navigation menu</span>
         </Button>
       </SheetTrigger>

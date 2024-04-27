@@ -107,7 +107,6 @@ export const authProvider: AuthProvider = {
     return null;
   },
   onError: async (error) => {
-    alert("Checkpoint");
     return {
       logout: true,
       redirectTo: "/login",

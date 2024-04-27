@@ -24,7 +24,7 @@ export const notificationProvider: NotificationProvider = {
         toast(message, {
           id: key,
           dismissible: false,
-          description: "You can undo this action.",
+          description: "Please wait...",
           action:
             undoableTimeout ?? 0 > 0
               ? {
