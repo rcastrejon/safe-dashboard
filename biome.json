@@ -82,6 +82,9 @@
         "useGetterReturn": "error",
         "useNamespaceKeyword": "error",
         "useValidTypeof": "error"
+      },
+      "nursery": {
+        "useSortedClasses": "warn"
       }
     }
   },

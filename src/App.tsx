@@ -8,10 +8,11 @@ import routerBindings, {
   DocumentTitleHandler,
 } from "@refinedev/react-router-v6";
 import dataProvider from "@refinedev/simple-rest";
+import { Home, TicketSlash } from "lucide-react";
 import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
-import "./App.css";
 import { authProvider } from "./authProvider";
-import { Layout } from "./components/layout";
+import { AppShellLayout } from "./common/app-shell-layout";
+import { customTitleHandler } from "./lib/utils";
 import { Dashboard } from "./pages/dashboard";
 import { Invitations } from "./pages/invitations";
 import { Login } from "./pages/login";
@@ -33,6 +34,7 @@ function App() {
                 list: "/",
                 meta: {
                   label: "Dashboard",
+                  icon: <Home />,
                 },
               },
               {
@@ -40,6 +42,10 @@ function App() {
                 list: "/invitations",
                 // show: "/invitations/show/:id",
                 // create: "/invitations/new",
+                meta: {
+                  parent: "dashboard",
+                  icon: <TicketSlash />,
+                },
               },
             ]}
             options={{
@@ -47,6 +53,7 @@ function App() {
               warnWhenUnsavedChanges: true,
               useNewQueryKeys: true,
               projectId: "6Pwv7v-89Qq3Q-KB404D",
+              disableTelemetry: true,
             }}
           >
             <Routes>
@@ -66,9 +73,9 @@ function App() {
                     key="main"
                     fallback={<CatchAllNavigate to="/login" />}
                   >
-                    <Layout>
+                    <AppShellLayout>
                       <Outlet />
-                    </Layout>
+                    </AppShellLayout>
                   </Authenticated>
                 }
               >
@@ -83,9 +90,9 @@ function App() {
                     key="error"
                     fallback={<CatchAllNavigate to="/login" />}
                   >
-                    <Layout>
+                    <AppShellLayout>
                       <Outlet />
-                    </Layout>
+                    </AppShellLayout>
                   </Authenticated>
                 }
               >
@@ -94,7 +101,7 @@ function App() {
             </Routes>
             <RefineKbar />
             <UnsavedChangesNotifier />
-            <DocumentTitleHandler />
+            <DocumentTitleHandler handler={customTitleHandler} />
           </Refine>
           <DevtoolsPanel />
         </DevtoolsProvider>
