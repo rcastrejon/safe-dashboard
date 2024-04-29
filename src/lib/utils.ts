@@ -20,3 +20,38 @@ export function customTitleHandler({
     return `${titleSections.slice(0, -1)} | S.A.F.E.`;
   return "S.A.F.E.";
 }
+
+export class NetworkError extends Error {
+  statusCode: string;
+
+  constructor(message: string) {
+    super(message);
+    this.statusCode = "ERR_CONNECTION_REFUSED";
+    this.name = "Network Error";
+  }
+}
+
+export async function apiFetch(endpoint: `/${string}`, init?: RequestInit) {
+  // TODO: Allow passing the api url to this function.
+
+  // The env variable is injected by Vite is expected to not end with a slash,
+  // so we remove it if it's there by using the URL constructor and then
+  // getting the origin property.
+  const apiURL = new URL(import.meta.env.VITE_API_ORIGIN);
+  // Set the Authorization header if a session token is present in local
+  // storage.
+  const { headers: headersInit, ...rest } = init ?? {};
+  const headers = new Headers(headersInit);
+  const session = localStorage.getItem(import.meta.env.VITE_SESSION_TOKEN_KEY);
+  if (session) {
+    headers.set("Authorization", `Bearer ${session}`);
+  }
+  try {
+    return await fetch(`${apiURL.origin}${endpoint}`, {
+      headers,
+      ...rest,
+    });
+  } catch (_e) {
+    throw new NetworkError("Could not communicate with the server.");
+  }
+}

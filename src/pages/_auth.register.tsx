@@ -40,9 +40,9 @@ export function Register() {
   };
 
   return (
-    <Card className="sm:mx-auto sm:w-full sm:max-w-sm">
+    <Card className="rounded-none border-x-0 sm:mx-auto sm:w-full sm:max-w-sm sm:rounded-lg sm:border-x">
       <CardHeader>
-        <CardTitle className="text-xl">Sign Up</CardTitle>
+        <CardTitle>Sign Up</CardTitle>
         <CardDescription>
           Enter your information to create an account
         </CardDescription>

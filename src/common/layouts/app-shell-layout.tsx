@@ -9,10 +9,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
-import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 import { type BreadcrumbsType, useBreadcrumb } from "@refinedev/core";
 import { type ITreeMenu, useMenu } from "@refinedev/core";
-import { CarFront } from "lucide-react";
+import { CarFront, Menu } from "lucide-react";
 import React from "react";
 import { useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
@@ -59,7 +58,7 @@ function useFlatMenu() {
 
 export function AppShellLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="grid min-h-screen w-full lg:grid-cols-[280px_1fr]">
+    <div className="grid min-h-screen w-full grid-cols-1 lg:grid-cols-[280px_1fr]">
       <div className="hidden border-r bg-muted/40 lg:block">
         <div className="flex h-full max-h-screen flex-col gap-2">
           <div className="flex h-[60px] items-center border-b px-4 lg:px-6">
@@ -75,7 +74,7 @@ export function AppShellLayout({ children }: { children: React.ReactNode }) {
         </div>
       </div>
       <div className="flex flex-col">
-        <header className="flex h-[60px] items-center gap-4 border-b bg-muted/40 px-4 md:px-6">
+        <header className="sticky top-0 z-30 flex h-[60px] items-center gap-4 border-b bg-background px-4 lg:static lg:bg-muted/40 md:px-6">
           <Sidebar />
           <Breadcrumb />
         </header>
@@ -146,7 +145,7 @@ function Sidebar() {
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <Button className="shrink-0 lg:hidden" size="icon" variant="outline">
-          <HamburgerMenuIcon className="h-4 w-4" />
+          <Menu className="h-5 w-5" />
           <span className="sr-only">Toggle navigation menu</span>
         </Button>
       </SheetTrigger>

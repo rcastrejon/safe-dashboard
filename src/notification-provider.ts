@@ -14,18 +14,24 @@ export const notificationProvider: NotificationProvider = {
       case "success":
       case "error":
         toast(message, {
+          dismissible: true,
+          closeButton: true,
           id: key,
           description,
         });
         break;
       case "progress":
         toast(message, {
-          description,
-          action: {
-            label: "Undo",
-            onClick: () => cancelMutation?.(),
-          },
-          duration: undoableTimeout && undoableTimeout * 1000,
+          id: key,
+          dismissible: false,
+          description: "Please wait...",
+          action:
+            undoableTimeout ?? 0 > 0
+              ? {
+                  label: "Undo",
+                  onClick: () => cancelMutation?.(),
+                }
+              : undefined,
         });
         break;
     }
