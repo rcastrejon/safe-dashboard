@@ -8,7 +8,7 @@ import routerBindings, {
   UnsavedChangesNotifier,
   DocumentTitleHandler,
 } from "@refinedev/react-router-v6";
-import { Home, TicketSlash } from "lucide-react";
+import { Home, TicketSlash, Users } from "lucide-react";
 import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import { authProvider } from "./auth-provider";
 import { AppShellLayout } from "./common/layouts/app-shell-layout";
@@ -19,6 +19,8 @@ import { notificationProvider } from "./notification-provider";
 import { Login } from "./pages/_auth.login";
 import { Register } from "./pages/_auth.register";
 import { Dashboard } from "./pages/dashboard";
+import { DriversPage } from "./pages/drivers";
+import { DriversNewPage } from "./pages/drivers.new";
 import { Invitations } from "./pages/invitations";
 import { NotFound } from "./pages/not-found";
 
@@ -49,6 +51,15 @@ function App() {
                 meta: {
                   parent: "dashboard",
                   icon: <TicketSlash />,
+                },
+              },
+              {
+                name: "drivers",
+                list: "/drivers",
+                create: "/drivers/new",
+                meta: {
+                  parent: "dashboard",
+                  icon: <Users />,
                 },
               },
             ]}
@@ -93,6 +104,10 @@ function App() {
                 <Route index element={<Dashboard />} />
                 <Route path="invitations">
                   <Route index element={<Invitations />} />
+                </Route>
+                <Route path="drivers">
+                  <Route index element={<DriversPage />} />
+                  <Route path="new" element={<DriversNewPage />} />
                 </Route>
               </Route>
               <Route

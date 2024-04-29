@@ -1,4 +1,3 @@
-import { useClipboard } from "@/common/use-clipboard";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -15,29 +14,33 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import type { DriverPublic } from "@/lib/types/driver";
 import { useDelete } from "@refinedev/core";
 import { useTable } from "@refinedev/react-table";
 import { type ColumnDef, flexRender } from "@tanstack/react-table";
 import { CirclePlus, MoreHorizontal } from "lucide-react";
 import { useMemo } from "react";
+import { Link } from "react-router-dom";
 
-type Invitation = {
-  id: string;
-  userId: string;
-};
-
-export function Invitations() {
-  const { copy } = useClipboard();
+export function DriversPage() {
   const { mutate: deleteMutate } = useDelete();
-  const columns = useMemo<ColumnDef<Invitation>[]>(
+  const columns = useMemo<ColumnDef<DriverPublic>[]>(
     () => [
       {
-        header: "Code",
-        accessorKey: "id",
+        header: "Name",
+        accessorKey: "name",
       },
       {
-        header: "User ID",
-        accessorKey: "userId",
+        header: "CURP",
+        accessorKey: "curp",
+      },
+      {
+        header: "License number",
+        accessorKey: "licenseNumber",
+      },
+      {
+        header: "Registration date",
+        accessorKey: "registrationDate",
       },
       {
         id: "actions",
@@ -55,19 +58,8 @@ export function Invitations() {
                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
                 <DropdownMenuItem
                   onClick={() =>
-                    copy(invitation.id, {
-                      id: `copy-invitation-${invitation.id}`,
-                      message: "Invitation code copied to clipboard.",
-                      type: "success",
-                    })
-                  }
-                >
-                  Copy invitation code
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() =>
                     deleteMutate({
-                      resource: "invitations",
+                      resource: "drivers",
                       id: invitation.id,
                       mutationMode: "undoable",
                       undoableTimeout: import.meta.env.VITE_UNDOABLE_TIMEOUT_MS,
@@ -82,7 +74,7 @@ export function Invitations() {
         },
       },
     ],
-    [deleteMutate, copy],
+    [deleteMutate],
   );
 
   const {
@@ -92,9 +84,9 @@ export function Invitations() {
     getCanPreviousPage,
     nextPage,
     getCanNextPage,
-  } = useTable<Invitation>({
+  } = useTable<DriverPublic>({
     refineCoreProps: {
-      resource: "invitations",
+      resource: "drivers",
       pagination: {
         mode: "client",
       },
@@ -112,10 +104,12 @@ export function Invitations() {
     <>
       <div className="flex items-end justify-between">
         <h3 className="font-semibold text-2xl leading-none tracking-tight">
-          Invitations
+          Drivers
         </h3>
-        <Button className="font-normal" size="sm">
-          <CirclePlus className="mr-2 h-4 w-4" /> Add Invitation
+        <Button className="font-normal" size="sm" asChild>
+          <Link to="new">
+            <CirclePlus className="mr-2 h-4 w-4" /> Add Driver
+          </Link>
         </Button>
       </div>
       <div className="flow-root">
