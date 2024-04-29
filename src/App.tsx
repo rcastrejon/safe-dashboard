@@ -1,3 +1,4 @@
+import { Toaster } from "@/components/ui/sonner";
 import { Authenticated, Refine } from "@refinedev/core";
 import { DevtoolsPanel, DevtoolsProvider } from "@refinedev/devtools";
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
@@ -10,14 +11,16 @@ import routerBindings, {
 import dataProvider from "@refinedev/simple-rest";
 import { Home, TicketSlash } from "lucide-react";
 import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
-import { authProvider } from "./authProvider";
-import { AppShellLayout } from "./common/app-shell-layout";
+import { authProvider } from "./auth-provider";
+import { AppShellLayout } from "./common/layouts/app-shell-layout";
+import { AuthLayout } from "./common/layouts/auth-layout";
 import { customTitleHandler } from "./lib/utils";
+import { notificationProvider } from "./notification-provider";
+import { Login } from "./pages/_auth.login";
+import { Register } from "./pages/_auth.register";
 import { Dashboard } from "./pages/dashboard";
 import { Invitations } from "./pages/invitations";
-import { Login } from "./pages/login";
 import { NotFound } from "./pages/not-found";
-import { Register } from "./pages/register";
 
 function App() {
   return (
@@ -28,6 +31,7 @@ function App() {
             dataProvider={dataProvider("https://api.fake-rest.refine.dev")}
             routerProvider={routerBindings}
             authProvider={authProvider}
+            notificationProvider={notificationProvider}
             resources={[
               {
                 name: "dashboard",
@@ -59,7 +63,14 @@ function App() {
             <Routes>
               <Route
                 element={
-                  <Authenticated key="guard" fallback={<Outlet />}>
+                  <Authenticated
+                    key="guard"
+                    fallback={
+                      <AuthLayout>
+                        <Outlet />
+                      </AuthLayout>
+                    }
+                  >
                     <NavigateToResource resource="dashboard" />
                   </Authenticated>
                 }
@@ -102,6 +113,7 @@ function App() {
             <RefineKbar />
             <UnsavedChangesNotifier />
             <DocumentTitleHandler handler={customTitleHandler} />
+            <Toaster />
           </Refine>
           <DevtoolsPanel />
         </DevtoolsProvider>
