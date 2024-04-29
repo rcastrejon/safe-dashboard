@@ -1,11 +1,5 @@
+import { RowActionMenuItem, RowActionsRoot } from "@/common/row-actions";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   Table,
   TableBody,
@@ -18,12 +12,12 @@ import type { DriverPublic } from "@/lib/types/driver";
 import { useDelete } from "@refinedev/core";
 import { useTable } from "@refinedev/react-table";
 import { type ColumnDef, flexRender } from "@tanstack/react-table";
-import { CirclePlus, MoreHorizontal } from "lucide-react";
+import { CirclePlus } from "lucide-react";
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 
 export function DriversPage() {
-  const { mutate: deleteMutate } = useDelete();
+  const { mutate: deleteOne } = useDelete();
   const columns = useMemo<ColumnDef<DriverPublic>[]>(
     () => [
       {
@@ -47,34 +41,25 @@ export function DriversPage() {
         cell: ({ row }) => {
           const invitation = row.original;
           return (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0">
-                  <span className="sr-only">Open menu</span>
-                  <MoreHorizontal className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                <DropdownMenuItem
-                  onClick={() =>
-                    deleteMutate({
-                      resource: "drivers",
-                      id: invitation.id,
-                      mutationMode: "undoable",
-                      undoableTimeout: import.meta.env.VITE_UNDOABLE_TIMEOUT_MS,
-                    })
-                  }
-                >
-                  Delete
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <RowActionsRoot>
+              <RowActionMenuItem
+                onClick={() =>
+                  deleteOne({
+                    resource: "drivers",
+                    id: invitation.id,
+                    mutationMode: "undoable",
+                    undoableTimeout: import.meta.env.VITE_UNDOABLE_TIMEOUT_MS,
+                  })
+                }
+              >
+                Delete
+              </RowActionMenuItem>
+            </RowActionsRoot>
           );
         },
       },
     ],
-    [deleteMutate],
+    [deleteOne],
   );
 
   const {
@@ -157,7 +142,7 @@ export function DriversPage() {
             </Table>
           </div>
         </div>
-        <div className="flex items-center justify-end space-x-2 py-4">
+        <div className="flex items-center justify-end space-x-3 py-3">
           <Button
             variant="outline"
             size="sm"

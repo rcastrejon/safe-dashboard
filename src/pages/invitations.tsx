@@ -1,12 +1,6 @@
+import { RowActionMenuItem, RowActionsRoot } from "@/common/row-actions";
 import { useClipboard } from "@/common/use-clipboard";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   Table,
   TableBody,
@@ -18,7 +12,7 @@ import {
 import { useDelete } from "@refinedev/core";
 import { useTable } from "@refinedev/react-table";
 import { type ColumnDef, flexRender } from "@tanstack/react-table";
-import { CirclePlus, MoreHorizontal } from "lucide-react";
+import { CirclePlus } from "lucide-react";
 import { useMemo } from "react";
 
 type Invitation = {
@@ -28,7 +22,7 @@ type Invitation = {
 
 export function Invitations() {
   const { copy } = useClipboard();
-  const { mutate: deleteMutate } = useDelete();
+  const { mutate: deleteOne } = useDelete();
   const columns = useMemo<ColumnDef<Invitation>[]>(
     () => [
       {
@@ -44,45 +38,36 @@ export function Invitations() {
         cell: ({ row }) => {
           const invitation = row.original;
           return (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0">
-                  <span className="sr-only">Open menu</span>
-                  <MoreHorizontal className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                <DropdownMenuItem
-                  onClick={() =>
-                    copy(invitation.id, {
-                      id: `copy-invitation-${invitation.id}`,
-                      message: "Invitation code copied to clipboard.",
-                      type: "success",
-                    })
-                  }
-                >
-                  Copy invitation code
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() =>
-                    deleteMutate({
-                      resource: "invitations",
-                      id: invitation.id,
-                      mutationMode: "undoable",
-                      undoableTimeout: import.meta.env.VITE_UNDOABLE_TIMEOUT_MS,
-                    })
-                  }
-                >
-                  Delete
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <RowActionsRoot>
+              <RowActionMenuItem
+                onClick={() =>
+                  copy(invitation.id, {
+                    id: `copy-invitation-${invitation.id}`,
+                    message: "Invitation code copied to clipboard.",
+                    type: "success",
+                  })
+                }
+              >
+                Copy invitation code
+              </RowActionMenuItem>
+              <RowActionMenuItem
+                onClick={() =>
+                  deleteOne({
+                    resource: "invitations",
+                    id: invitation.id,
+                    mutationMode: "undoable",
+                    undoableTimeout: import.meta.env.VITE_UNDOABLE_TIMEOUT_MS,
+                  })
+                }
+              >
+                Delete
+              </RowActionMenuItem>
+            </RowActionsRoot>
           );
         },
       },
     ],
-    [deleteMutate, copy],
+    [deleteOne, copy],
   );
 
   const {
@@ -163,7 +148,7 @@ export function Invitations() {
             </Table>
           </div>
         </div>
-        <div className="flex items-center justify-end space-x-2 py-4">
+        <div className="flex items-center justify-end space-x-3 py-3">
           <Button
             variant="outline"
             size="sm"
