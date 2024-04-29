@@ -1,4 +1,4 @@
-import { RowActionMenuItem, RowActionsRoot } from "@/common/row-actions";
+import { RowActionsMenuItem, RowActionsRoot } from "@/common/row-actions";
 import { InfinityTable, TablePaginationFooter } from "@/common/table";
 import { useClipboard } from "@/common/use-clipboard";
 import { Button } from "@/components/ui/button";
@@ -46,7 +46,7 @@ export function Invitations() {
           const invitation = row.original;
           return (
             <RowActionsRoot>
-              <RowActionMenuItem
+              <RowActionsMenuItem
                 onClick={() =>
                   copy(invitation.id, {
                     id: `copy-invitation-${invitation.id}`,
@@ -55,8 +55,8 @@ export function Invitations() {
                 }
               >
                 Copy invitation code
-              </RowActionMenuItem>
-              <RowActionMenuItem
+              </RowActionsMenuItem>
+              <RowActionsMenuItem
                 onClick={() =>
                   deleteOne({
                     resource: "invitations",
@@ -67,7 +67,7 @@ export function Invitations() {
                 }
               >
                 Delete
-              </RowActionMenuItem>
+              </RowActionsMenuItem>
             </RowActionsRoot>
           );
         },
@@ -85,7 +85,6 @@ export function Invitations() {
     getCanNextPage,
   } = useTable<InvitationPublic>({
     refineCoreProps: {
-      resource: "invitations",
       pagination: {
         mode: "client",
       },

@@ -1,4 +1,4 @@
-import { RowActionMenuItem, RowActionsRoot } from "@/common/row-actions";
+import { RowActionsMenuItem, RowActionsRoot } from "@/common/row-actions";
 import { InfinityTable, TablePaginationFooter } from "@/common/table";
 import { Button } from "@/components/ui/button";
 import {
@@ -43,7 +43,7 @@ export function DriversPage() {
           const driver = row.original;
           return (
             <RowActionsRoot>
-              <RowActionMenuItem
+              <RowActionsMenuItem
                 onClick={() =>
                   go({
                     to: {
@@ -55,8 +55,8 @@ export function DriversPage() {
                 }
               >
                 Edit
-              </RowActionMenuItem>
-              <RowActionMenuItem
+              </RowActionsMenuItem>
+              <RowActionsMenuItem
                 onClick={() =>
                   deleteOne({
                     resource: "drivers",
@@ -67,7 +67,7 @@ export function DriversPage() {
                 }
               >
                 Delete
-              </RowActionMenuItem>
+              </RowActionsMenuItem>
             </RowActionsRoot>
           );
         },
@@ -85,7 +85,6 @@ export function DriversPage() {
     getCanNextPage,
   } = useTable<DriverPublic>({
     refineCoreProps: {
-      resource: "drivers",
       pagination: {
         mode: "client",
       },

@@ -25,4 +25,4 @@ export function RowActionsRoot({ children }: { children: React.ReactNode }) {
   );
 }
 
-export { DropdownMenuItem as RowActionMenuItem };
+export { DropdownMenuItem as RowActionsMenuItem };
