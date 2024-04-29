@@ -42,7 +42,7 @@
   "scripts": {
     "dev": "refine dev",
     "build": "tsc && refine build --base=/app/",
-    "preview": "refine start",
+    "preview": "refine start --base=/app/",
     "refine": "refine",
     "check": "biome check .",
     "check:apply": "biome check . --apply"

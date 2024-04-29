@@ -1,5 +1,5 @@
 import type { DataProvider } from "@refinedev/core";
-import { apiFetch } from "./lib/utils";
+import { NetworkError, apiFetch } from "./lib/utils";
 
 export const dataProvider = (url: string): DataProvider => ({
   getList: async ({ resource }) => {
@@ -11,14 +11,51 @@ export const dataProvider = (url: string): DataProvider => ({
       total: items.length,
     };
   },
-  getOne: async () => {
-    throw new Error("Not implemented");
+  getOne: async ({ resource, id }) => {
+    const response = await apiFetch(`/${resource}/${id}`);
+    return {
+      data: await response.json(),
+    };
   },
-  create: async () => {
-    throw new Error("Not implemented");
+  create: async ({ resource, variables }) => {
+    const response = await apiFetch(`/${resource}`, {
+      method: "POST",
+      body: JSON.stringify(variables),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) {
+      const json = await response.json();
+      throw new NetworkError({
+        message: "Failed to create the resource",
+        statusCode: response.status,
+        errors: json.error,
+      });
+    }
+    return {
+      data: await response.json(),
+    };
   },
-  update: async () => {
-    throw new Error("Not implemented");
+  update: async ({ resource, id, variables }) => {
+    const response = await apiFetch(`/${resource}/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(variables),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) {
+      const json = await response.json();
+      throw new NetworkError({
+        message: "Failed to update the resource",
+        statusCode: response.status,
+        errors: json.error,
+      });
+    }
+    return {
+      data: await response.json(),
+    };
   },
   deleteOne: async ({ resource, id }) => {
     const response = await apiFetch(`/${resource}/${id}`, {

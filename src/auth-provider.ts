@@ -1,7 +1,11 @@
 import type { AuthProvider } from "@refinedev/core";
-import { apiFetch } from "./lib/utils";
-
-export const TOKEN_KEY = import.meta.env.VITE_SESSION_TOKEN_KEY;
+import {
+  NetworkError,
+  apiFetch,
+  clearSessionFromLocalStorage,
+  getSessionFromLocalStorage,
+  setSessionInLocalStorage,
+} from "./lib/utils";
 
 type Session = {
   exipresAt: string;
@@ -23,11 +27,14 @@ export const authProvider: AuthProvider = {
       const { error }: { error: string } = await result.json();
       return {
         success: false,
-        error: new Error(error),
+        error: new NetworkError({
+          statusCode: result.status,
+          message: error,
+        }),
       };
     }
     const { session }: { session: Session } = await result.json();
-    localStorage.setItem(TOKEN_KEY, session.id);
+    setSessionInLocalStorage(session.id);
     return {
       success: true,
       redirectTo: "/",
@@ -48,11 +55,14 @@ export const authProvider: AuthProvider = {
       const { error }: { error: string } = await result.json();
       return {
         success: false,
-        error: new Error(error),
+        error: new NetworkError({
+          statusCode: result.status,
+          message: error,
+        }),
       };
     }
     const { session }: { session: Session } = await result.json();
-    localStorage.setItem(TOKEN_KEY, session.id);
+    setSessionInLocalStorage(session.id);
     return {
       success: true,
       redirectTo: "/",
@@ -69,10 +79,13 @@ export const authProvider: AuthProvider = {
       const { error }: { error: string } = await result.json();
       return {
         success: false,
-        error: new Error(error),
+        error: new NetworkError({
+          statusCode: result.status,
+          message: error,
+        }),
       };
     }
-    localStorage.removeItem(TOKEN_KEY);
+    clearSessionFromLocalStorage();
     return {
       success: true,
       redirectTo: "/login",
@@ -82,7 +95,7 @@ export const authProvider: AuthProvider = {
     };
   },
   check: async () => {
-    const token = localStorage.getItem(TOKEN_KEY);
+    const token = getSessionFromLocalStorage();
     if (token) {
       return {
         authenticated: true,
@@ -96,7 +109,7 @@ export const authProvider: AuthProvider = {
   },
   getPermissions: async () => null,
   getIdentity: async () => {
-    const token = localStorage.getItem(TOKEN_KEY);
+    const token = getSessionFromLocalStorage();
     if (token) {
       return {
         id: 1,
@@ -107,10 +120,13 @@ export const authProvider: AuthProvider = {
     return null;
   },
   onError: async (error) => {
-    return {
-      logout: true,
-      redirectTo: "/login",
-      error: new Error(error),
-    };
+    if (error.status === 401 || error.status === 403) {
+      return {
+        logout: true,
+        redirectTo: "/login",
+        error,
+      };
+    }
+    return {};
   },
 };

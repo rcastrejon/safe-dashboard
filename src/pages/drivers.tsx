@@ -1,17 +1,6 @@
 import { RowActionsMenuItem, RowActionsRoot } from "@/common/row-actions";
 import { InfinityTable, TablePaginationFooter } from "@/common/table";
-import { useClipboard } from "@/common/use-clipboard";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import {
   TableBody,
   TableCell,
@@ -19,48 +8,59 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { InvitationPublic } from "@/lib/types/invitation";
-import { useDelete } from "@refinedev/core";
-import { useModalForm } from "@refinedev/react-hook-form";
+import type { DriverPublic } from "@/lib/types/driver";
+import { useDelete, useGo } from "@refinedev/core";
 import { useTable } from "@refinedev/react-table";
 import { type ColumnDef, flexRender } from "@tanstack/react-table";
 import { CirclePlus } from "lucide-react";
 import { useMemo } from "react";
+import { Link } from "react-router-dom";
 
-export function Invitations() {
-  const { copy } = useClipboard();
+export function DriversPage() {
+  const go = useGo();
   const { mutate: deleteOne } = useDelete();
-  const columns = useMemo<ColumnDef<InvitationPublic>[]>(
+  const columns = useMemo<ColumnDef<DriverPublic>[]>(
     () => [
       {
-        header: "Code",
-        accessorKey: "id",
+        header: "Name",
+        accessorKey: "name",
       },
       {
-        header: "User ID",
-        accessorKey: "userId",
+        header: "CURP",
+        accessorKey: "curp",
+      },
+      {
+        header: "License number",
+        accessorKey: "licenseNumber",
+      },
+      {
+        header: "Registration date",
+        accessorKey: "registrationDate",
       },
       {
         id: "actions",
         cell: ({ row }) => {
-          const invitation = row.original;
+          const driver = row.original;
           return (
             <RowActionsRoot>
               <RowActionsMenuItem
                 onClick={() =>
-                  copy(invitation.id, {
-                    id: `copy-invitation-${invitation.id}`,
-                    message: "Invitation code copied to clipboard.",
+                  go({
+                    to: {
+                      action: "edit",
+                      resource: "drivers",
+                      id: driver.id,
+                    },
                   })
                 }
               >
-                Copy invitation code
+                Edit
               </RowActionsMenuItem>
               <RowActionsMenuItem
                 onClick={() =>
                   deleteOne({
-                    resource: "invitations",
-                    id: invitation.id,
+                    resource: "drivers",
+                    id: driver.id,
                     mutationMode: "undoable",
                     undoableTimeout: import.meta.env.VITE_UNDOABLE_TIMEOUT_MS,
                   })
@@ -73,7 +73,7 @@ export function Invitations() {
         },
       },
     ],
-    [deleteOne, copy],
+    [deleteOne, go],
   );
 
   const {
@@ -83,7 +83,7 @@ export function Invitations() {
     getCanPreviousPage,
     nextPage,
     getCanNextPage,
-  } = useTable<InvitationPublic>({
+  } = useTable<DriverPublic>({
     refineCoreProps: {
       pagination: {
         mode: "client",
@@ -98,50 +98,17 @@ export function Invitations() {
     columns,
   });
 
-  const {
-    modal: { visible, show, close },
-    saveButtonProps,
-  } = useModalForm({
-    refineCoreProps: {
-      action: "create",
-    },
-  });
-
   return (
     <>
       <div className="flex items-end justify-between">
         <h3 className="font-semibold text-2xl leading-none tracking-tight">
-          Invitations
+          Drivers
         </h3>
-        <Dialog
-          open={visible}
-          onOpenChange={() => (visible ? close() : show())}
-        >
-          <DialogTrigger asChild>
-            <Button className="font-normal" size="sm">
-              <CirclePlus className="mr-2 h-4 w-4" /> Add Invitation
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Add an invitation</DialogTitle>
-              <DialogDescription>
-                Are you sure you want to add a new invitation? Anyone with the
-                invitation code will be able to register an account.
-              </DialogDescription>
-            </DialogHeader>
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button type="button" variant="secondary">
-                  Cancel
-                </Button>
-              </DialogClose>
-              <Button type="button" {...saveButtonProps}>
-                Accept
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+        <Button className="font-normal" size="sm" asChild>
+          <Link to="new">
+            <CirclePlus className="mr-2 h-4 w-4" /> Add Driver
+          </Link>
+        </Button>
       </div>
       <div className="flow-root">
         <InfinityTable>

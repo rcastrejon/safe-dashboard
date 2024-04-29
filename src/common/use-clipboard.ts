@@ -9,7 +9,6 @@ export const useClipboard = () => {
       id?: string;
       description?: string;
       message: string;
-      type: "success" | "error" | "progress";
     },
   ): Promise<string | undefined> {
     try {
@@ -18,7 +17,7 @@ export const useClipboard = () => {
         key: toastParams.id,
         description: toastParams.description,
         message: toastParams.message,
-        type: toastParams.type,
+        type: "success",
       });
       return toastParams.id;
     } catch (_e) {
