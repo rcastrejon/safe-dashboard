@@ -1,7 +1,7 @@
 import { RowActionMenuItem, RowActionsRoot } from "@/common/row-actions";
+import { InfinityTable, TablePaginationFooter } from "@/common/table";
 import { Button } from "@/components/ui/button";
 import {
-  Table,
   TableBody,
   TableCell,
   TableHead,
@@ -9,7 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import type { DriverPublic } from "@/lib/types/driver";
-import { useDelete } from "@refinedev/core";
+import { useDelete, useGo } from "@refinedev/core";
 import { useTable } from "@refinedev/react-table";
 import { type ColumnDef, flexRender } from "@tanstack/react-table";
 import { CirclePlus } from "lucide-react";
@@ -17,6 +17,7 @@ import { useMemo } from "react";
 import { Link } from "react-router-dom";
 
 export function DriversPage() {
+  const go = useGo();
   const { mutate: deleteOne } = useDelete();
   const columns = useMemo<ColumnDef<DriverPublic>[]>(
     () => [
@@ -39,14 +40,27 @@ export function DriversPage() {
       {
         id: "actions",
         cell: ({ row }) => {
-          const invitation = row.original;
+          const driver = row.original;
           return (
             <RowActionsRoot>
               <RowActionMenuItem
                 onClick={() =>
+                  go({
+                    to: {
+                      action: "edit",
+                      resource: "drivers",
+                      id: driver.id,
+                    },
+                  })
+                }
+              >
+                Edit
+              </RowActionMenuItem>
+              <RowActionMenuItem
+                onClick={() =>
                   deleteOne({
                     resource: "drivers",
-                    id: invitation.id,
+                    id: driver.id,
                     mutationMode: "undoable",
                     undoableTimeout: import.meta.env.VITE_UNDOABLE_TIMEOUT_MS,
                   })
@@ -59,7 +73,7 @@ export function DriversPage() {
         },
       },
     ],
-    [deleteOne],
+    [deleteOne, go],
   );
 
   const {
@@ -98,68 +112,49 @@ export function DriversPage() {
         </Button>
       </div>
       <div className="flow-root">
-        <div className="-mx-4 overflow-x-auto sm:mx-0">
-          <div className="rounded-none border-y bg-card text-card-foreground shadow-sm sm:rounded-lg sm:border-x">
-            <Table>
-              <TableHeader>
-                {getHeaderGroups().map((headerGroup) => (
-                  <TableRow key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => {
-                      return (
-                        <TableHead
-                          className="bg-muted/40 sm:last:pr-6 sm:first:pl-6"
-                          key={header.id}
-                        >
-                          {header.isPlaceholder
-                            ? null
-                            : flexRender(
-                                header.column.columnDef.header,
-                                header.getContext(),
-                              )}
-                        </TableHead>
-                      );
-                    })}
-                  </TableRow>
+        <InfinityTable>
+          <TableHeader>
+            {getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead
+                      className="bg-muted/40 sm:last:pr-6 sm:first:pl-6"
+                      key={header.id}
+                    >
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
+                    </TableHead>
+                  );
+                })}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {getRowModel().rows.map((row) => (
+              <TableRow key={row.id}>
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell
+                    className="sm:last:pr-6 sm:first:pl-6"
+                    key={cell.id}
+                  >
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
                 ))}
-              </TableHeader>
-              <TableBody>
-                {getRowModel().rows.map((row) => (
-                  <TableRow key={row.id}>
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell
-                        className="sm:last:pr-6 sm:first:pl-6"
-                        key={cell.id}
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext(),
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        </div>
-        <div className="flex items-center justify-end space-x-3 py-3">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => previousPage()}
-            disabled={!getCanPreviousPage()}
-          >
-            Previous
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => nextPage()}
-            disabled={!getCanNextPage()}
-          >
-            Next
-          </Button>
-        </div>
+              </TableRow>
+            ))}
+          </TableBody>
+        </InfinityTable>
+        <TablePaginationFooter
+          canNextPage={getCanNextPage()}
+          nextPage={nextPage}
+          canPreviousPage={getCanPreviousPage()}
+          previousPage={previousPage}
+        />
       </div>
     </>
   );

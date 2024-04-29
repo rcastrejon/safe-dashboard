@@ -20,6 +20,7 @@ import { Login } from "./pages/_auth.login";
 import { Register } from "./pages/_auth.register";
 import { Dashboard } from "./pages/dashboard";
 import { DriversPage } from "./pages/drivers";
+import { DriversEditPage } from "./pages/drivers.edit";
 import { DriversNewPage } from "./pages/drivers.new";
 import { Invitations } from "./pages/invitations";
 import { NotFound } from "./pages/not-found";
@@ -57,6 +58,7 @@ function App() {
                 name: "drivers",
                 list: "/drivers",
                 create: "/drivers/new",
+                edit: "/drivers/:id/edit",
                 meta: {
                   parent: "dashboard",
                   icon: <Users />,
@@ -108,6 +110,7 @@ function App() {
                 <Route path="drivers">
                   <Route index element={<DriversPage />} />
                   <Route path="new" element={<DriversNewPage />} />
+                  <Route path=":id/edit" element={<DriversEditPage />} />
                 </Route>
               </Route>
               <Route

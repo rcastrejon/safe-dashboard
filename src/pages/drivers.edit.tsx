@@ -14,26 +14,26 @@ import type { HttpError } from "@refinedev/core";
 import { useForm } from "@refinedev/react-hook-form";
 import { Link } from "react-router-dom";
 
-export function DriversNewPage() {
+export function DriversEditPage() {
   const {
-    refineCore: { onFinish },
-    formState: { isSubmitting },
-    register,
+    refineCore: { onFinish, queryResult },
     handleSubmit,
+    register,
+    formState: { isSubmitting },
   } = useForm<DriverPublic, HttpError, Driver>({
+    shouldUseNativeValidation: true,
     refineCoreProps: {
       errorNotification: (error, _, resource) => {
         if (!error) throw new Error("An error occurred");
         return handleFormError(error, resource);
       },
     },
-    shouldUseNativeValidation: true,
   });
 
   return (
     <Card className="-mx-4 rounded-none border-x-0 sm:mx-0 sm:rounded-lg sm:border-x">
       <CardHeader>
-        <CardTitle>Add a new driver</CardTitle>
+        <CardTitle>Driver details</CardTitle>
       </CardHeader>
       <CardContent>
         <form
@@ -43,7 +43,13 @@ export function DriversNewPage() {
         >
           <div className="space-y-2">
             <Label htmlFor="name">Name</Label>
-            <Input id="name" {...register("name", { required: true })} />
+            <Input
+              id="name"
+              defaultValue={queryResult?.data?.data.name}
+              {...register("name", {
+                required: true,
+              })}
+            />
           </div>
           <div className="space-y-2">
             <Label htmlFor="birthDate">Date of birth</Label>
@@ -51,22 +57,32 @@ export function DriversNewPage() {
               className="w-full"
               id="birthDate"
               type="date"
+              defaultValue={queryResult?.data?.data.birthDate}
               {...register("birthDate", { required: true })}
             />
           </div>
           <div className="space-y-2">
             <Label htmlFor="address">Address</Label>
-            <Input id="address" {...register("address", { required: true })} />
+            <Input
+              id="address"
+              defaultValue={queryResult?.data?.data.address}
+              {...register("address", { required: true })}
+            />
           </div>
           <div className="space-y-2">
             <Label htmlFor="curp">CURP</Label>
-            <Input id="curp" {...register("curp", { required: true })} />
+            <Input
+              id="curp"
+              defaultValue={queryResult?.data?.data.curp}
+              {...register("curp", { required: true })}
+            />
             <p className="text-muted-foreground text-sm">Must be unique.</p>
           </div>
           <div className="space-y-2">
             <Label htmlFor="licenseNumber">License number</Label>
             <Input
               id="licenseNumber"
+              defaultValue={queryResult?.data?.data.licenseNumber}
               {...register("licenseNumber", { required: true })}
             />
             <p className="text-muted-foreground text-sm">Must be unique.</p>
@@ -76,9 +92,10 @@ export function DriversNewPage() {
             <Input
               id="monthlySalary"
               type="number"
-              min={0}
-              max={1000000}
               step={1}
+              min={0}
+              max={100000}
+              defaultValue={queryResult?.data?.data.monthlySalary}
               {...register("monthlySalary", {
                 required: true,
               })}

@@ -1,29 +1,25 @@
 import { RowActionMenuItem, RowActionsRoot } from "@/common/row-actions";
+import { InfinityTable, TablePaginationFooter } from "@/common/table";
 import { useClipboard } from "@/common/use-clipboard";
 import { Button } from "@/components/ui/button";
 import {
-  Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import type { InvitationPublic } from "@/lib/types/invitation";
 import { useDelete } from "@refinedev/core";
 import { useTable } from "@refinedev/react-table";
 import { type ColumnDef, flexRender } from "@tanstack/react-table";
 import { CirclePlus } from "lucide-react";
 import { useMemo } from "react";
 
-type Invitation = {
-  id: string;
-  userId: string;
-};
-
 export function Invitations() {
   const { copy } = useClipboard();
   const { mutate: deleteOne } = useDelete();
-  const columns = useMemo<ColumnDef<Invitation>[]>(
+  const columns = useMemo<ColumnDef<InvitationPublic>[]>(
     () => [
       {
         header: "Code",
@@ -44,7 +40,6 @@ export function Invitations() {
                   copy(invitation.id, {
                     id: `copy-invitation-${invitation.id}`,
                     message: "Invitation code copied to clipboard.",
-                    type: "success",
                   })
                 }
               >
@@ -77,7 +72,7 @@ export function Invitations() {
     getCanPreviousPage,
     nextPage,
     getCanNextPage,
-  } = useTable<Invitation>({
+  } = useTable<InvitationPublic>({
     refineCoreProps: {
       resource: "invitations",
       pagination: {
@@ -104,68 +99,49 @@ export function Invitations() {
         </Button>
       </div>
       <div className="flow-root">
-        <div className="-mx-4 overflow-x-auto sm:mx-0">
-          <div className="rounded-none border-y bg-card text-card-foreground shadow-sm sm:rounded-lg sm:border-x">
-            <Table>
-              <TableHeader>
-                {getHeaderGroups().map((headerGroup) => (
-                  <TableRow key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => {
-                      return (
-                        <TableHead
-                          className="bg-muted/40 sm:last:pr-6 sm:first:pl-6"
-                          key={header.id}
-                        >
-                          {header.isPlaceholder
-                            ? null
-                            : flexRender(
-                                header.column.columnDef.header,
-                                header.getContext(),
-                              )}
-                        </TableHead>
-                      );
-                    })}
-                  </TableRow>
+        <InfinityTable>
+          <TableHeader>
+            {getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead
+                      className="bg-muted/40 sm:last:pr-6 sm:first:pl-6"
+                      key={header.id}
+                    >
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
+                    </TableHead>
+                  );
+                })}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {getRowModel().rows.map((row) => (
+              <TableRow key={row.id}>
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell
+                    className="sm:last:pr-6 sm:first:pl-6"
+                    key={cell.id}
+                  >
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
                 ))}
-              </TableHeader>
-              <TableBody>
-                {getRowModel().rows.map((row) => (
-                  <TableRow key={row.id}>
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell
-                        className="sm:last:pr-6 sm:first:pl-6"
-                        key={cell.id}
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext(),
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        </div>
-        <div className="flex items-center justify-end space-x-3 py-3">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => previousPage()}
-            disabled={!getCanPreviousPage()}
-          >
-            Previous
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => nextPage()}
-            disabled={!getCanNextPage()}
-          >
-            Next
-          </Button>
-        </div>
+              </TableRow>
+            ))}
+          </TableBody>
+        </InfinityTable>
+        <TablePaginationFooter
+          canNextPage={getCanNextPage()}
+          nextPage={nextPage}
+          canPreviousPage={getCanPreviousPage()}
+          previousPage={previousPage}
+        />
       </div>
     </>
   );
