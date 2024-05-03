@@ -24,6 +24,9 @@ import { DriversEditPage } from "./pages/drivers.edit";
 import { DriversNewPage } from "./pages/drivers.new";
 import { Invitations } from "./pages/invitations";
 import { NotFound } from "./pages/not-found";
+import { VehiclesPage } from "./pages/Vehicles/vehicles";
+import { VehiclesNewPage } from "./pages/Vehicles/vehicles.new";
+import { VehiclesEditPage } from "./pages/Vehicles/vehicles.edit";
 
 function App() {
   return (
@@ -63,6 +66,16 @@ function App() {
                   parent: "dashboard",
                   icon: <Users />,
                 },
+              },
+              {
+                name: "vehicles",
+                list: "/vehicles",
+                create: "/vehicles/new",
+                edit: "/vehicles/:id/edit",
+                meta: {
+                  parent: "dashboard",
+                  icon: <Users />
+                }
               },
             ]}
             options={{
@@ -111,6 +124,12 @@ function App() {
                   <Route index element={<DriversPage />} />
                   <Route path="new" element={<DriversNewPage />} />
                   <Route path=":id/edit" element={<DriversEditPage />} />
+                </Route>
+
+                <Route path="vehicles">
+                  <Route index element={<VehiclesPage />} />
+                  <Route path="new" element={<VehiclesNewPage />} />
+                  <Route path=":id/edit" element={<VehiclesEditPage />} />
                 </Route>
               </Route>
               <Route
