@@ -27,6 +27,7 @@ import { NotFound } from "./pages/not-found";
 import { VehiclesPage } from "./pages/vehicles";
 import { VehiclesEditPage } from "./pages/vehicles.edit";
 import { VehiclesNewPage } from "./pages/vehicles.new";
+import { UsersPage } from "./pages/users"
 
 function App() {
   return (
@@ -62,6 +63,15 @@ function App() {
                 list: "/drivers",
                 create: "/drivers/new",
                 edit: "/drivers/:id/edit",
+                meta: {
+                  parent: "dashboard",
+                  icon: <Users />,
+                },
+              },
+              {
+                name: "users",
+                list: "/users",
+                create: "/users/new",
                 meta: {
                   parent: "dashboard",
                   icon: <Users />,
@@ -125,7 +135,9 @@ function App() {
                   <Route path="new" element={<DriversNewPage />} />
                   <Route path=":id/edit" element={<DriversEditPage />} />
                 </Route>
-
+                <Route path="users">
+                  <Route index element={<UsersPage/>} />
+                </Route>
                 <Route path="vehicles">
                   <Route index element={<VehiclesPage />} />
                   <Route path="new" element={<VehiclesNewPage />} />
