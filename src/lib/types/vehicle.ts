@@ -1,13 +1,19 @@
-export type Vehicle = {
-    make: string;
-    model: string;
-    vin: string;
-    cost: number;
-    licensePlate: string;
-    purchaseDate: string;
-    photoURL: string;
-}
+type VehicleBase = {
+  make: string;
+  model: string;
+  vin: string;
+  cost: number;
+  licensePlate: string;
+  purchaseDate: string;
+};
 
-export type VehiclePublic = Vehicle & {
-    id: number;
-}
+export type VehicleInputs = VehicleBase & {
+  fileList: FileList;
+};
+
+export type VehicleEditInputs = VehicleBase;
+
+export type VehiclePublic = VehicleBase & {
+  id: number;
+  photoUrl: string;
+};

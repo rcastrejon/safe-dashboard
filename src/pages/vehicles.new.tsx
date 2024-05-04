@@ -8,66 +8,76 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Vehicle, VehiclePublic } from "@/lib/types/vehicle";
+import type { VehicleInputs, VehiclePublic } from "@/lib/types/vehicle";
 import { handleFormError } from "@/lib/utils";
 import type { HttpError } from "@refinedev/core";
 import { useForm } from "@refinedev/react-hook-form";
 import { Link } from "react-router-dom";
 
-export function VehiclesEditPage() {
+export function VehiclesNewPage() {
   const {
-    refineCore: { onFinish, queryResult },
-    handleSubmit,
-    register,
+    refineCore: { onFinish },
     formState: { isSubmitting },
-  } = useForm<VehiclePublic, HttpError, Vehicle>({
-    shouldUseNativeValidation: true,
+    register,
+    handleSubmit,
+  } = useForm<VehiclePublic, HttpError, VehicleInputs>({
     refineCoreProps: {
+      meta: {
+        // This is necesary to avoid sending the form data as JSON in the
+        // Content-Type header. Instead, leave it empty so the browser can
+        // automatically set it to the correct value.
+        headers: {},
+      },
       errorNotification: (error, _, resource) => {
         if (!error) throw new Error("An error occurred");
         return handleFormError(error, resource);
       },
     },
+    shouldUseNativeValidation: true,
   });
+
+  const onSubmit = async ({ fileList, ...rest }: VehicleInputs) => {
+    const file: File | undefined = fileList?.[0];
+    const formData = new FormData();
+
+    if (file) {
+      formData.append("photo", file);
+    }
+    for (const [key, value] of Object.entries(rest)) {
+      formData.append(key, value.toString());
+    }
+
+    // @ts-expect-error
+    await onFinish(formData);
+  };
 
   return (
     <Card className="-mx-4 rounded-none border-x-0 sm:mx-0 sm:rounded-lg sm:border-x">
       <CardHeader>
-        <CardTitle>Vehicle details</CardTitle>
+        <CardTitle>Add a new vehicle</CardTitle>
       </CardHeader>
       <CardContent>
         <form
           id="create"
           className="gap grid gap-y-5"
-          onSubmit={handleSubmit(onFinish)}
+          onSubmit={handleSubmit(onSubmit)}
         >
           <div className="space-y-2">
             <Label htmlFor="make">Make</Label>
-            <Input
-              id="make"
-              defaultValue={queryResult?.data?.data.make}
-              {...register("make", {
-                required: true,
-              })}
-            />
+            <Input id="name" {...register("make", { required: true })} />
           </div>
           <div className="space-y-2">
             <Label htmlFor="model">Vehicle's model</Label>
             <Input
               className="w-full"
               id="model"
-              defaultValue={queryResult?.data?.data.model}
               {...register("model", { required: true })}
             />
           </div>
           <div className="space-y-2">
             <Label htmlFor="vin">VIN</Label>
-            <Input
-              id="vin"
-              defaultValue={queryResult?.data?.data.vin}
-              {...register("vin", { required: true })}
-            />
-            <p className="text-muted-foreground text-sm">VIN must be unique.</p>
+            <Input id="vin" {...register("vin", { required: true })} />
+            <p className="text-muted-foreground text-sm">Must be unique.</p>
           </div>
           <div className="space-y-2">
             <Label htmlFor="cost">Cost</Label>
@@ -77,7 +87,6 @@ export function VehiclesEditPage() {
               min={0}
               max={10000000}
               step={1}
-              defaultValue={queryResult?.data?.data.cost}
               {...register("cost", { required: true })}
             />
           </div>
@@ -85,35 +94,31 @@ export function VehiclesEditPage() {
             <Label htmlFor="licensePlate">License plate</Label>
             <Input
               id="licensePlate"
-              defaultValue={queryResult?.data?.data.licensePlate}
               {...register("licensePlate", { required: true })}
             />
-            <p className="text-muted-foreground text-sm">License plate must be unique.</p>
+            <p className="text-muted-foreground text-sm">Must be unique.</p>
           </div>
           <div className="space-y-2">
             <Label htmlFor="purchaseDate">Purchase date</Label>
             <Input
               id="purchaseDate"
               type="date"
-              defaultValue={queryResult?.data?.data.purchaseDate}
               {...register("purchaseDate", {
                 required: true,
               })}
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="photoURL">Photo</Label>
-            <Input 
-              id="photoURL"
+            <Label htmlFor="fileInput">Photo</Label>
+            <Input
+              id="fileInput"
               type="file"
               accept="image/png, image/jpeg"
-              defaultValue={queryResult?.data?.data.photoURL}
-              {...register("photoURL", {
+              {...register("fileList", {
                 required: true,
               })}
             />
           </div>
-
         </form>
       </CardContent>
       <CardFooter className="flex justify-end gap-6 border-t py-4">

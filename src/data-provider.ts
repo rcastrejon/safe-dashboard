@@ -17,11 +17,14 @@ export const dataProvider = (url: string): DataProvider => ({
       data: await response.json(),
     };
   },
-  create: async ({ resource, variables }) => {
+  create: async ({ resource, variables, meta }) => {
     const response = await apiFetch(`/${resource}`, {
       method: "POST",
-      body: JSON.stringify(variables),
-      headers: {
+      body:
+        variables instanceof FormData === true
+          ? variables
+          : JSON.stringify(variables),
+      headers: meta?.headers ?? {
         "Content-Type": "application/json",
       },
     });

@@ -8,7 +8,7 @@ import routerBindings, {
   UnsavedChangesNotifier,
   DocumentTitleHandler,
 } from "@refinedev/react-router-v6";
-import { Home, TicketSlash, Users } from "lucide-react";
+import { Car, Home, TicketSlash, Users } from "lucide-react";
 import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import { authProvider } from "./auth-provider";
 import { AppShellLayout } from "./common/layouts/app-shell-layout";
@@ -24,9 +24,9 @@ import { DriversEditPage } from "./pages/drivers.edit";
 import { DriversNewPage } from "./pages/drivers.new";
 import { Invitations } from "./pages/invitations";
 import { NotFound } from "./pages/not-found";
-import { VehiclesPage } from "./pages/Vehicles/vehicles";
-import { VehiclesNewPage } from "./pages/Vehicles/vehicles.new";
-import { VehiclesEditPage } from "./pages/Vehicles/vehicles.edit";
+import { VehiclesPage } from "./pages/vehicles";
+import { VehiclesEditPage } from "./pages/vehicles.edit";
+import { VehiclesNewPage } from "./pages/vehicles.new";
 
 function App() {
   return (
@@ -74,8 +74,8 @@ function App() {
                 edit: "/vehicles/:id/edit",
                 meta: {
                   parent: "dashboard",
-                  icon: <Users />
-                }
+                  icon: <Car />,
+                },
               },
             ]}
             options={{

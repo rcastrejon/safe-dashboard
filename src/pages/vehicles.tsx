@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { VehiclePublic } from "@/lib/types/vehicle";
+import type { VehiclePublic } from "@/lib/types/vehicle";
 import { useDelete, useGo } from "@refinedev/core";
 import { useTable } from "@refinedev/react-table";
 import { type ColumnDef, flexRender } from "@tanstack/react-table";
@@ -21,6 +21,21 @@ export function VehiclesPage() {
   const { mutate: deleteOne } = useDelete();
   const columns = useMemo<ColumnDef<VehiclePublic>[]>(
     () => [
+      {
+        id: "photoUrl",
+        accessorKey: "photoUrl",
+        cell: ({ row }) => (
+          <img
+            alt="Vehicle photo"
+            className="aspect-square rounded-md object-cover"
+            src={row.original.photoUrl}
+            loading="lazy"
+            decoding="async"
+            height={64}
+            width={64}
+          />
+        ),
+      },
       {
         header: "Make",
         accessorKey: "make",
@@ -35,7 +50,7 @@ export function VehiclesPage() {
       },
       {
         header: "Cost",
-        accessorKey: "cost"
+        accessorKey: "cost",
       },
       {
         header: "Registration date",
