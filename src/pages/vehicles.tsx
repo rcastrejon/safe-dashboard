@@ -23,7 +23,6 @@ export function VehiclesPage() {
     () => [
       {
         id: "photoUrl",
-        accessorKey: "photoUrl",
         cell: ({ row }) => (
           <img
             alt="Vehicle photo"

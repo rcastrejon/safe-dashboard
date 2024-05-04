@@ -26,6 +26,8 @@ export function VehiclesNewPage() {
         // This is necesary to avoid sending the form data as JSON in the
         // Content-Type header. Instead, leave it empty so the browser can
         // automatically set it to the correct value.
+        //
+        // Check data-provider.ts for implementation details.
         headers: {},
       },
       errorNotification: (error, _, resource) => {
@@ -47,7 +49,7 @@ export function VehiclesNewPage() {
       formData.append(key, value.toString());
     }
 
-    // @ts-expect-error
+    // @ts-expect-error: the onFinish function only accepts VehicleInputs but we want to pass FormData to the data provider.
     await onFinish(formData);
   };
 
@@ -67,7 +69,7 @@ export function VehiclesNewPage() {
             <Input id="name" {...register("make", { required: true })} />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="model">Vehicle's model</Label>
+            <Label htmlFor="model">Model</Label>
             <Input
               className="w-full"
               id="model"

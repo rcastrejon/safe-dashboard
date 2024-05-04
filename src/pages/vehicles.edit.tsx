@@ -52,7 +52,7 @@ export function VehiclesEditPage() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="model">Vehicle's model</Label>
+            <Label htmlFor="model">Model</Label>
             <Input
               className="w-full"
               id="model"

@@ -37,8 +37,8 @@ export function Invitations() {
         accessorKey: "id",
       },
       {
-        header: "User ID",
-        accessorKey: "userId",
+        header: "Created by",
+        accessorKey: "user.email",
       },
       {
         id: "actions",
@@ -54,7 +54,7 @@ export function Invitations() {
                   })
                 }
               >
-                Copy invitation code
+                Copy code
               </RowActionsMenuItem>
               <RowActionsMenuItem
                 onClick={() =>
