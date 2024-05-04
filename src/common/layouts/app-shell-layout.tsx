@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 import { type BreadcrumbsType, useBreadcrumb } from "@refinedev/core";
 import { type ITreeMenu, useMenu } from "@refinedev/core";
 import { CarFront, Menu } from "lucide-react";
-import React from "react";
+import React, { memo } from "react";
 import { useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
 
@@ -63,7 +63,7 @@ export function AppShellLayout({ children }: { children: React.ReactNode }) {
         <div className="flex h-full max-h-screen flex-col gap-2">
           <div className="flex h-[60px] items-center border-b px-4 lg:px-6">
             <span className="flex items-center gap-2 font-semibold">
-              <CarFront size={24} /> S.A.F.E.
+              <CarFront className="h-6 w-6" /> S.A.F.E.
             </span>
           </div>
           <div className="flex-1">
@@ -152,7 +152,7 @@ function Sidebar() {
       <SheetContent className="flex flex-col" side="left">
         <nav className="grid gap-2 font-medium text-lg">
           <span className="flex items-center gap-2 font-semibold text-lg">
-            <CarFront size={24} />
+            <CarFront className="h-6 w-6" />
             <span className="sr-only">S.A.F.E.</span>
           </span>
           {menuItems.map((item) => (
@@ -192,28 +192,42 @@ function ResourcesMenu() {
   ));
 }
 
-/*
- * The purpose of this component is to wrap the icon, given by the resources
- * attribute from Refine, in order to customize the styles. We can not set an
- * static size in the original icon component because different use cases may
- * require different sizes. For example, the non-collapsible sidebar uses a
- * smaller size than the collapsible sidebar.
- */
+type IconProps = React.SVGProps<SVGSVGElement>;
 
-interface IconWrapperProps extends React.HTMLAttributes<SVGElement> {
+interface IconWrapperProps extends IconProps {
   icon: React.ReactNode;
   className?: string;
 }
 
-const IconWrapper = React.forwardRef<SVGElement, IconWrapperProps>(
-  ({ icon, className, ...rest }, ref) => {
-    if (!React.isValidElement(icon))
-      throw new Error("Icon must be a valid React element");
-    return React.cloneElement(icon, {
-      ...rest,
-      ...icon.props,
-      className: cn(icon.props.className, className),
-      ref,
-    });
-  },
-);
+/**
+ * IconWrapper component
+ *
+ * The purpose of this component is to wrap an icon element and allow for
+ * customization of its className. It accepts an icon element as a prop and
+ * optionally, a className for additional styles.
+ *
+ * The component uses React.memo for performance optimization by memoizing
+ * the rendered output and preventing unnecessary re-renders if the props
+ * haven't changed.
+ *
+ * @param {React.ReactNode} icon - A valid React element representing the icon.
+ * @param {string} [className] - Additional CSS class names to apply to the icon.
+ * @param {IconProps} [rest] - Any additional props to pass to the icon element.
+ * @returns {React.ReactElement} The wrapped icon element with applied styles.
+ */
+const IconWrapper = memo<IconWrapperProps>(({ icon, className, ...rest }) => {
+  // Ensure that the `icon` prop is a valid React element
+  if (!React.isValidElement(icon)) {
+    throw new Error("Icon must be a valid React element");
+  }
+
+  // Combine the original props of the `icon` element with the props passed to `IconWrapper`
+  const iconProps = {
+    ...rest,
+    ...icon.props,
+    className: cn(icon.props.className, className),
+  };
+
+  // Clone the `icon` element with the combined props
+  return React.cloneElement(icon, iconProps);
+});

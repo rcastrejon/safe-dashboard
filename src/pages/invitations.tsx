@@ -124,15 +124,18 @@ export function Invitations() {
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Add an invitation</DialogTitle>
+              <DialogTitle>
+                Are you sure you want to create an invitation?
+              </DialogTitle>
               <DialogDescription>
-                Are you sure you want to add a new invitation? Anyone with the
-                invitation code will be able to register an account.
+                Anyone with the invitation code will be able to register an
+                account. Invitations can be deleted at any time before they are
+                used.
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
               <DialogClose asChild>
-                <Button type="button" variant="secondary">
+                <Button type="button" variant="outline">
                   Cancel
                 </Button>
               </DialogClose>
