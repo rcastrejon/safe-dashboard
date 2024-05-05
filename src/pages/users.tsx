@@ -8,7 +8,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import type { UserPublic } from "@/lib/types/user";
-import { useDelete} from "@refinedev/core";
+import { useDelete } from "@refinedev/core";
 import { useTable } from "@refinedev/react-table";
 import { type ColumnDef, flexRender } from "@tanstack/react-table";
 import { useMemo } from "react";
@@ -18,12 +18,16 @@ export function UsersPage() {
   const columns = useMemo<ColumnDef<UserPublic>[]>(
     () => [
       {
+        header: "ID",
+        accessorKey: "id",
+      },
+      {
         header: "Email",
         accessorKey: "email",
       },
       {
-        header: "Password",
-        accessorKey: "password",
+        header: "Registration date",
+        accessorKey: "registrationDate",
       },
       {
         id: "actions",

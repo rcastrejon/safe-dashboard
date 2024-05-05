@@ -8,7 +8,7 @@ import routerBindings, {
   UnsavedChangesNotifier,
   DocumentTitleHandler,
 } from "@refinedev/react-router-v6";
-import { Car, Home, TicketSlash, Users } from "lucide-react";
+import { BookUser, Car, Home, TicketSlash, Users } from "lucide-react";
 import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import { authProvider } from "./auth-provider";
 import { AppShellLayout } from "./common/layouts/app-shell-layout";
@@ -24,10 +24,10 @@ import { DriversEditPage } from "./pages/drivers.edit";
 import { DriversNewPage } from "./pages/drivers.new";
 import { Invitations } from "./pages/invitations";
 import { NotFound } from "./pages/not-found";
+import { UsersPage } from "./pages/users";
 import { VehiclesPage } from "./pages/vehicles";
 import { VehiclesEditPage } from "./pages/vehicles.edit";
 import { VehiclesNewPage } from "./pages/vehicles.new";
-import { UsersPage } from "./pages/users"
 
 function App() {
   return (
@@ -49,10 +49,16 @@ function App() {
                 },
               },
               {
+                name: "users",
+                list: "/users",
+                meta: {
+                  parent: "dashboard",
+                  icon: <Users />,
+                },
+              },
+              {
                 name: "invitations",
                 list: "/invitations",
-                // show: "/invitations/show/:id",
-                // create: "/invitations/new",
                 meta: {
                   parent: "dashboard",
                   icon: <TicketSlash />,
@@ -65,16 +71,7 @@ function App() {
                 edit: "/drivers/:id/edit",
                 meta: {
                   parent: "dashboard",
-                  icon: <Users />,
-                },
-              },
-              {
-                name: "users",
-                list: "/users",
-                create: "/users/new",
-                meta: {
-                  parent: "dashboard",
-                  icon: <Users />,
+                  icon: <BookUser />,
                 },
               },
               {
@@ -136,7 +133,7 @@ function App() {
                   <Route path=":id/edit" element={<DriversEditPage />} />
                 </Route>
                 <Route path="users">
-                  <Route index element={<UsersPage/>} />
+                  <Route index element={<UsersPage />} />
                 </Route>
                 <Route path="vehicles">
                   <Route index element={<VehiclesPage />} />

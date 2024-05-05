@@ -16,4 +16,5 @@ export type VehicleEditInputs = VehicleBase;
 export type VehiclePublic = VehicleBase & {
   id: number;
   photoUrl: string;
+  registrationDate: string;
 };

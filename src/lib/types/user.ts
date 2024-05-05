@@ -1,9 +1,5 @@
-export type User = {
-    email: string;
-    password: string;
-  };
-  
-  export type UserPublic = User & {
-    id: number;
-  };
-  
+export type UserPublic = {
+  id: number;
+  email: string;
+  registrationDate: string;
+};
