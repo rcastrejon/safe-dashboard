@@ -20,6 +20,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import type { InvitationPublic } from "@/lib/types/invitation";
+import { handleFormError } from "@/lib/utils";
 import { useDelete } from "@refinedev/core";
 import { useModalForm } from "@refinedev/react-hook-form";
 import { useTable } from "@refinedev/react-table";
@@ -104,6 +105,10 @@ export function Invitations() {
   } = useModalForm({
     refineCoreProps: {
       action: "create",
+      errorNotification: (error, _, resource) => {
+        if (!error) throw new Error("An error occurred");
+        return handleFormError(error, resource);
+      },
     },
   });
 

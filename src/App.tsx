@@ -51,7 +51,7 @@ function App() {
           <Refine
             dataProvider={dataProvider(import.meta.env.VITE_API_ORIGIN)}
             routerProvider={routerBindings}
-            authProvider={authProvider}
+            authProvider={authProvider(import.meta.env.VITE_API_ORIGIN)}
             notificationProvider={notificationProvider}
             resources={[
               {

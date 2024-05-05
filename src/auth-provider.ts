@@ -1,8 +1,7 @@
 import type { AuthProvider } from "@refinedev/core";
 import {
-  NetworkError,
-  apiFetch,
   clearSessionFromLocalStorage,
+  fetchApi,
   getSessionFromLocalStorage,
   setSessionInLocalStorage,
 } from "./lib/utils";
@@ -14,26 +13,18 @@ type Session = {
   userId: string;
 };
 
-export const authProvider: AuthProvider = {
+export const authProvider = (apiUrl: string): AuthProvider => ({
   register: async ({ email, password, invitation }) => {
-    const result = await apiFetch("/sign-up", {
-      method: "POST",
-      body: JSON.stringify({ email, password, invitation }),
-      headers: {
-        "Content-Type": "application/json",
+    const { session } = await fetchApi<{ session: Session }>(
+      `${apiUrl}/sign-up`,
+      {
+        method: "POST",
+        body: JSON.stringify({ email, password, invitation }),
+        headers: {
+          "Content-Type": "application/json",
+        },
       },
-    });
-    if (!result.ok) {
-      const { error }: { error: string } = await result.json();
-      return {
-        success: false,
-        error: new NetworkError({
-          statusCode: result.status,
-          message: error,
-        }),
-      };
-    }
-    const { session }: { session: Session } = await result.json();
+    );
     setSessionInLocalStorage(session.id);
     return {
       success: true,
@@ -44,24 +35,16 @@ export const authProvider: AuthProvider = {
     };
   },
   login: async ({ email, password }) => {
-    const result = await apiFetch("/sign-in", {
-      method: "POST",
-      body: JSON.stringify({ email, password }),
-      headers: {
-        "Content-Type": "application/json",
+    const { session } = await fetchApi<{ session: Session }>(
+      `${apiUrl}/sign-in`,
+      {
+        method: "POST",
+        body: JSON.stringify({ email, password }),
+        headers: {
+          "Content-Type": "application/json",
+        },
       },
-    });
-    if (!result.ok) {
-      const { error }: { error: string } = await result.json();
-      return {
-        success: false,
-        error: new NetworkError({
-          statusCode: result.status,
-          message: error,
-        }),
-      };
-    }
-    const { session }: { session: Session } = await result.json();
+    );
     setSessionInLocalStorage(session.id);
     return {
       success: true,
@@ -72,19 +55,9 @@ export const authProvider: AuthProvider = {
     };
   },
   logout: async () => {
-    const result = await apiFetch("/logout", {
+    await fetchApi(`${apiUrl}/logout`, {
       method: "POST",
     });
-    if (!result.ok) {
-      const { error }: { error: string } = await result.json();
-      return {
-        success: false,
-        error: new NetworkError({
-          statusCode: result.status,
-          message: error,
-        }),
-      };
-    }
     clearSessionFromLocalStorage();
     return {
       success: true,
@@ -129,4 +102,4 @@ export const authProvider: AuthProvider = {
     }
     return {};
   },
-};
+});
