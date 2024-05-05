@@ -9,4 +9,5 @@ export type Driver = {
 
 export type DriverPublic = Driver & {
   id: number;
+  registrationDate: string;
 };
