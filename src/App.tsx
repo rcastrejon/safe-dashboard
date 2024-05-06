@@ -8,7 +8,7 @@ import routerBindings, {
   UnsavedChangesNotifier,
   DocumentTitleHandler,
 } from "@refinedev/react-router-v6";
-import { BookUser, Car, Home, TicketSlash, Users } from "lucide-react";
+import { BookUser, Car, Home, Link, TicketSlash, Users } from "lucide-react";
 import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import { authProvider } from "./auth-provider";
 import { AppShellLayout } from "./common/layouts/app-shell-layout";
@@ -18,6 +18,9 @@ import { customTitleHandler } from "./lib/utils";
 import { notificationProvider } from "./notification-provider";
 import { Login } from "./pages/_auth.login";
 import { Register } from "./pages/_auth.register";
+import { AssignmentsPage } from "./pages/assignments";
+import { AssignmentsEditPage } from "./pages/assignments.edit";
+import { AssignmentsNewPage } from "./pages/assignments.new";
 import { Dashboard } from "./pages/dashboard";
 import { DriversPage } from "./pages/drivers";
 import { DriversEditPage } from "./pages/drivers.edit";
@@ -28,8 +31,6 @@ import { UsersPage } from "./pages/users";
 import { VehiclesPage } from "./pages/vehicles";
 import { VehiclesEditPage } from "./pages/vehicles.edit";
 import { VehiclesNewPage } from "./pages/vehicles.new";
-import { AssignmentsPage } from "./pages/assignments";
-import { AssignmentsNewPage } from "./pages/assignments.new";
 
 function App() {
   return (
@@ -93,7 +94,7 @@ function App() {
                 edit: "/assignments/:id/edit",
                 meta: {
                   parent: "dashboard",
-                  icon: <Users />,
+                  icon: <Link />,
                 },
               },
             ]}
@@ -155,7 +156,7 @@ function App() {
                 <Route path="assignments">
                   <Route index element={<AssignmentsPage />} />
                   <Route path="new" element={<AssignmentsNewPage />} />
-                  {/* <Route path=":id/edit" element={<AssignmentsEditPage />} /> */}
+                  <Route path=":id/edit" element={<AssignmentsEditPage />} />
                 </Route>
               </Route>
               <Route

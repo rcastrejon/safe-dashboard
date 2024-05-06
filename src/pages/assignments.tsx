@@ -23,12 +23,23 @@ export function AssignmentsPage() {
   const columns = useMemo<ColumnDef<AssignmentPublic>[]>(
     () => [
       {
-        header: "Vehicule ID",
-        accessorKey: "vehicleId",
+        header: "Vehicle",
+        cell: ({ row }) => {
+          const assignment = row.original;
+          return (
+            <span>
+              {assignment.vehicle?.make + " " + assignment.vehicle?.model}
+            </span>
+          );
+        },
       },
       {
-        header: "Driver ID",
-        accessorKey: "driverId",
+        header: "Driver",
+        accessorKey: "driver.name",
+      },
+      {
+        header: "Registration Date",
+        accessorKey: "registrationDate",
       },
       {
         id: "actions",
@@ -66,7 +77,7 @@ export function AssignmentsPage() {
         },
       },
     ],
-    [deleteOne, go]
+    [deleteOne, go],
   );
 
   const {
@@ -94,12 +105,12 @@ export function AssignmentsPage() {
   return (
     <>
       <div className="flex items-end justify-between">
-        <h3 className="font-semibold text-2xl leading-none tracking-tight">
+        <h3 className="text-2xl font-semibold leading-none tracking-tight">
           Assignments
         </h3>
         <Button className="font-normal" size="sm" asChild>
           <Link to="new">
-            <CirclePlus className="mr-2 h-4 w-4" /> Create assignment
+            <CirclePlus className="w-4 h-4 mr-2" /> Create assignment
           </Link>
         </Button>
       </div>
@@ -118,7 +129,7 @@ export function AssignmentsPage() {
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                     </TableHead>
                   );

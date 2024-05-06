@@ -15,7 +15,7 @@ import { type HttpError, useList } from "@refinedev/core";
 import { useForm } from "@refinedev/react-hook-form";
 import { Link } from "react-router-dom";
 
-export function AssignmentsNewPage() {
+export function AssignmentsEditPage() {
   const { data: driverData, isError: driverIsError } = useList<
     DriverPublic,
     HttpError
@@ -48,7 +48,7 @@ export function AssignmentsNewPage() {
   return (
     <Card className="-mx-4 rounded-none border-x-0 sm:mx-0 sm:rounded-lg sm:border-x">
       <CardHeader>
-        <CardTitle>Create assignment</CardTitle>
+        <CardTitle>Assignment details</CardTitle>
       </CardHeader>
       <CardContent>
         <form
