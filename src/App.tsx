@@ -28,6 +28,8 @@ import { UsersPage } from "./pages/users";
 import { VehiclesPage } from "./pages/vehicles";
 import { VehiclesEditPage } from "./pages/vehicles.edit";
 import { VehiclesNewPage } from "./pages/vehicles.new";
+import { AssignmentsPage } from "./pages/assignments";
+import { AssignmentsNewPage } from "./pages/assignments.new";
 
 function App() {
   return (
@@ -82,6 +84,16 @@ function App() {
                 meta: {
                   parent: "dashboard",
                   icon: <Car />,
+                },
+              },
+              {
+                name: "assignments",
+                list: "/assignments",
+                create: "/assignments/new",
+                edit: "/assignments/:id/edit",
+                meta: {
+                  parent: "dashboard",
+                  icon: <Users />,
                 },
               },
             ]}
@@ -139,6 +151,11 @@ function App() {
                   <Route index element={<VehiclesPage />} />
                   <Route path="new" element={<VehiclesNewPage />} />
                   <Route path=":id/edit" element={<VehiclesEditPage />} />
+                </Route>
+                <Route path="assignments">
+                  <Route index element={<AssignmentsPage />} />
+                  <Route path="new" element={<AssignmentsNewPage />} />
+                  {/* <Route path=":id/edit" element={<AssignmentsEditPage />} /> */}
                 </Route>
               </Route>
               <Route
