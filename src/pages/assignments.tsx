@@ -28,7 +28,7 @@ export function AssignmentsPage() {
           const assignment = row.original;
           return (
             <span>
-              {assignment.vehicle?.make + " " + assignment.vehicle?.model}
+              {assignment.vehicle.make + " " + assignment.vehicle.model}
             </span>
           );
         },
@@ -38,7 +38,7 @@ export function AssignmentsPage() {
         accessorKey: "driver.name",
       },
       {
-        header: "Registration Date",
+        header: "Registration date",
         accessorKey: "registrationDate",
       },
       {
@@ -105,12 +105,12 @@ export function AssignmentsPage() {
   return (
     <>
       <div className="flex items-end justify-between">
-        <h3 className="text-2xl font-semibold leading-none tracking-tight">
+        <h3 className="font-semibold text-2xl leading-none tracking-tight">
           Assignments
         </h3>
         <Button className="font-normal" size="sm" asChild>
           <Link to="new">
-            <CirclePlus className="w-4 h-4 mr-2" /> Create assignment
+            <CirclePlus className="mr-2 h-4 w-4" /> Add Assignment
           </Link>
         </Button>
       </div>

@@ -11,23 +11,21 @@ import type { Assignment, AssignmentPublic } from "@/lib/types/assignment";
 import type { DriverPublic } from "@/lib/types/driver";
 import type { VehiclePublic } from "@/lib/types/vehicle";
 import { handleFormError } from "@/lib/utils";
-import { type HttpError, useList } from "@refinedev/core";
+import { type HttpError, useSelect } from "@refinedev/core";
 import { useForm } from "@refinedev/react-hook-form";
 import { Link } from "react-router-dom";
 
 export function AssignmentsEditPage() {
-  const { data: driverData, isError: driverIsError } = useList<
-    DriverPublic,
-    HttpError
-  >({
+  const { options: driverOptions } = useSelect<DriverPublic>({
     resource: "drivers",
+    optionLabel: "name",
+    optionValue: "id",
   });
 
-  const { data: vehicleData, isError: vehicleIsError } = useList<
-    VehiclePublic,
-    HttpError
-  >({
+  const { options: vehicleOptions } = useSelect<VehiclePublic>({
     resource: "vehicles",
+    optionLabel: "vin",
+    optionValue: "id",
   });
 
   const {
@@ -53,42 +51,37 @@ export function AssignmentsEditPage() {
       <CardContent>
         <form
           id="create"
-          className="grid gap gap-y-5"
+          className="gap grid gap-y-5"
           onSubmit={handleSubmit(onFinish)}
         >
-          <div className="space-y-2">
+          <div className="flex flex-col space-y-2">
             <Label htmlFor="vehicleId">Vehicle VIN</Label>
             <select
-              className="flex"
               id="vehicleId"
               {...register("vehicleId", { required: true })}
             >
-              {vehicleData?.data.map(({ vin, id }) => (
-                <option key={id} value={id}>
-                  {vin}
+              {vehicleOptions?.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
                 </option>
               ))}
             </select>
           </div>
-          <div className="space-y-2">
+          <div className="flex flex-col space-y-2">
             <Label htmlFor="driverId">Driver</Label>
-            <select
-              className="flex"
-              id="driverId"
-              {...register("driverId", { required: true })}
-            >
-              {driverData?.data.map(({ name, id }) => (
-                <option key={id} value={id}>
-                  {name}
+            <select id="driverId" {...register("driverId", { required: true })}>
+              {driverOptions?.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
                 </option>
               ))}
             </select>
           </div>
         </form>
       </CardContent>
-      <CardFooter className="flex justify-end gap-6 py-4 border-t">
+      <CardFooter className="flex justify-end gap-6 border-t py-4">
         <Link
-          className="text-sm font-medium text-primary underline-offset-4 hover:underline"
+          className="font-medium text-primary text-sm underline-offset-4 hover:underline"
           to="/assignments"
         >
           Cancel
