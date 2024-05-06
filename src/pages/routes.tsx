@@ -1,13 +1,12 @@
-import { RowActionsMenuItem, RowActionsRoot } from "@/common/row-actions";
-import { InfinityTable, TablePaginationFooter } from "@/common/table";
-import { Button } from "@/components/ui/button";
 import {
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+  InfinityTable,
+  SimpleReactTableBody,
+  SimpleReactTableHeader,
+  TablePaginationFooter,
+} from "@/common/infinity-table";
+import { RowActionsMenuItem, RowActionsRoot } from "@/common/row-actions";
+import { Button } from "@/components/ui/button";
+import { TableCell, TableHead } from "@/components/ui/table";
 import type { RoutePublic } from "@/lib/types/route";
 import { useDelete, useGo } from "@refinedev/core";
 import { useTable } from "@refinedev/react-table";
@@ -53,6 +52,7 @@ export function RoutesPage() {
       },
       {
         id: "actions",
+        header: () => <span className="sr-only">Actions</span>,
         cell: ({ row }) => {
           const route = row.original;
           return (
@@ -90,14 +90,7 @@ export function RoutesPage() {
     [deleteOne, go],
   );
 
-  const {
-    getRowModel,
-    getHeaderGroups,
-    previousPage,
-    getCanPreviousPage,
-    nextPage,
-    getCanNextPage,
-  } = useTable<RoutePublic>({
+  const table = useTable<RoutePublic>({
     refineCoreProps: {
       pagination: {
         mode: "client",
@@ -126,48 +119,27 @@ export function RoutesPage() {
       </div>
       <div className="flow-root">
         <InfinityTable>
-          <TableHeader>
-            {getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead
-                      className="bg-muted/40 sm:last:pr-6 sm:first:pl-6"
-                      key={header.id}
-                    >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {getRowModel().rows.map((row) => (
-              <TableRow key={row.id}>
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell
-                    className="sm:last:pr-6 sm:first:pl-6"
-                    key={cell.id}
-                  >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
-          </TableBody>
+          <SimpleReactTableHeader table={table}>
+            {(header) => (
+              <TableHead className="bg-muted/40 sm:last:pr-6 sm:first:pl-6">
+                {header.isPlaceholder
+                  ? null
+                  : flexRender(
+                      header.column.columnDef.header,
+                      header.getContext(),
+                    )}
+              </TableHead>
+            )}
+          </SimpleReactTableHeader>
+          <SimpleReactTableBody table={table}>
+            {(cell) => (
+              <TableCell className="sm:last:pr-6 sm:first:pl-6">
+                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+              </TableCell>
+            )}
+          </SimpleReactTableBody>
         </InfinityTable>
-        <TablePaginationFooter
-          canNextPage={getCanNextPage()}
-          nextPage={nextPage}
-          canPreviousPage={getCanPreviousPage()}
-          previousPage={previousPage}
-        />
+        <TablePaginationFooter table={table} />
       </div>
     </>
   );

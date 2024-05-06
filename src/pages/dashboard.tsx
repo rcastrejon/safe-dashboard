@@ -1,10 +1,9 @@
-import { InfinityTable } from "@/common/table";
+import { InfinityTable, SimpleReactTableHeader } from "@/common/infinity-table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   TableBody,
   TableCell,
   TableHead,
-  TableHeader,
   TableRow,
 } from "@/components/ui/table";
 import type { DriverPublic } from "@/lib/types/driver";
@@ -91,7 +90,7 @@ function TodaysRoutesTable() {
     [],
   );
 
-  const { getRowModel, getHeaderGroups } = useTable<RoutePublic>({
+  const table = useTable<RoutePublic>({
     refineCoreProps: {
       resource: "routes",
       filters: {
@@ -112,30 +111,20 @@ function TodaysRoutesTable() {
     },
     columns,
   });
+  const { getRowModel } = table;
 
   return (
     <InfinityTable>
-      <TableHeader>
-        {getHeaderGroups().map((headerGroup) => (
-          <TableRow key={headerGroup.id}>
-            {headerGroup.headers.map((header) => {
-              return (
-                <TableHead
-                  className="bg-muted/40 sm:last:pr-6 sm:first:pl-6"
-                  key={header.id}
-                >
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
-                      )}
-                </TableHead>
-              );
-            })}
-          </TableRow>
-        ))}
-      </TableHeader>
+      <SimpleReactTableHeader table={table}>
+        {(header) => (
+          <TableHead className="bg-muted/40 sm:last:pr-6 sm:first:pl-6">
+            {header.isPlaceholder
+              ? null
+              : flexRender(header.column.columnDef.header, header.getContext())}
+          </TableHead>
+        )}
+      </SimpleReactTableHeader>
+
       <TableBody>
         {getRowModel()
           .rows.filter((row) => row.original.driveDate === today)
