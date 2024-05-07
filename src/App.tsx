@@ -8,7 +8,15 @@ import routerBindings, {
   UnsavedChangesNotifier,
   DocumentTitleHandler,
 } from "@refinedev/react-router-v6";
-import { BookUser, Car, Home, Link, TicketSlash, Users } from "lucide-react";
+import {
+  BookUser,
+  Car,
+  Home,
+  Link,
+  TicketSlash,
+  Users,
+  RouteIcon,
+} from "lucide-react";
 import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import { authProvider } from "./auth-provider";
 import { AppShellLayout } from "./common/layouts/app-shell-layout";
@@ -31,6 +39,8 @@ import { UsersPage } from "./pages/users";
 import { VehiclesPage } from "./pages/vehicles";
 import { VehiclesEditPage } from "./pages/vehicles.edit";
 import { VehiclesNewPage } from "./pages/vehicles.new";
+import { RoutesPage } from "./pages/routes";
+import { RoutesNewPage } from "./pages/routes.new";
 
 function App() {
   return (
@@ -97,6 +107,15 @@ function App() {
                   icon: <Link />,
                 },
               },
+              {
+                name: "routes",
+                list: "/routes",
+                create: "/vehicles/new",
+                meta: {
+                  parent: "dashboard",
+                  icon: <RouteIcon />,
+                },
+              },
             ]}
             options={{
               syncWithLocation: true,
@@ -157,6 +176,10 @@ function App() {
                   <Route index element={<AssignmentsPage />} />
                   <Route path="new" element={<AssignmentsNewPage />} />
                   <Route path=":id/edit" element={<AssignmentsEditPage />} />
+                </Route>
+                <Route path="routes">
+                  <Route index element={<RoutesPage />} />
+                  <Route path="new" element={<RoutesNewPage />} />
                 </Route>
               </Route>
               <Route
