@@ -1,4 +1,5 @@
 import { FormCardFooter } from "@/common/form-card";
+import { Select } from "@/common/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import type { Assignment, AssignmentPublic } from "@/lib/types/assignment";
@@ -47,28 +48,34 @@ export function AssignmentsEditPage() {
           className="gap grid gap-y-5"
           onSubmit={handleSubmit(onFinish)}
         >
-          <div className="flex flex-col space-y-2">
+          <div className="space-y-2">
             <Label htmlFor="vehicleId">Vehicle VIN</Label>
-            <select
-              id="vehicleId"
+            <Select
               {...register("vehicleId", { required: true })}
+              id="vehicleId"
             >
-              {vehicleOptions?.map((option) => (
+              <option value="" disabled>
+                Select a vehicle
+              </option>
+              {vehicleOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
                 </option>
               ))}
-            </select>
+            </Select>
           </div>
-          <div className="flex flex-col space-y-2">
+          <div className="space-y-2">
             <Label htmlFor="driverId">Driver</Label>
-            <select id="driverId" {...register("driverId", { required: true })}>
-              {driverOptions?.map((option) => (
+            <Select {...register("driverId", { required: true })} id="driverId">
+              <option value="" disabled>
+                Select a driver
+              </option>
+              {driverOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
                 </option>
               ))}
-            </select>
+            </Select>
           </div>
         </form>
       </CardContent>

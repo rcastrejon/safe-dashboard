@@ -9,7 +9,7 @@ import { useForm } from "@refinedev/react-hook-form";
 
 export function VehiclesEditPage() {
   const {
-    refineCore: { onFinish, queryResult },
+    refineCore: { onFinish },
     handleSubmit,
     register,
     formState: { isSubmitting },
@@ -37,11 +37,10 @@ export function VehiclesEditPage() {
           <div className="space-y-2">
             <Label htmlFor="make">Make</Label>
             <Input
-              id="make"
-              defaultValue={queryResult?.data?.data.make}
               {...register("make", {
                 required: true,
               })}
+              id="make"
             />
           </div>
           <div className="space-y-2">
@@ -49,49 +48,41 @@ export function VehiclesEditPage() {
             <Input
               className="w-full"
               id="model"
-              defaultValue={queryResult?.data?.data.model}
               {...register("model", { required: true })}
             />
           </div>
           <div className="space-y-2">
             <Label htmlFor="vin">VIN</Label>
-            <Input
-              id="vin"
-              defaultValue={queryResult?.data?.data.vin}
-              {...register("vin", { required: true })}
-            />
+            <Input {...register("vin", { required: true })} id="vin" />
             <p className="text-muted-foreground text-sm">Must be unique.</p>
           </div>
           <div className="space-y-2">
             <Label htmlFor="cost">Cost</Label>
             <Input
+              {...register("cost", { required: true })}
               id="cost"
               type="number"
               min={0}
               max={10000000}
               step={1}
-              defaultValue={queryResult?.data?.data.cost}
-              {...register("cost", { required: true })}
             />
           </div>
           <div className="space-y-2">
             <Label htmlFor="licensePlate">License plate</Label>
             <Input
-              id="licensePlate"
-              defaultValue={queryResult?.data?.data.licensePlate}
               {...register("licensePlate", { required: true })}
+              id="licensePlate"
             />
             <p className="text-muted-foreground text-sm">Must be unique.</p>
           </div>
           <div className="space-y-2">
             <Label htmlFor="purchaseDate">Purchase date</Label>
             <Input
-              id="purchaseDate"
-              type="date"
-              defaultValue={queryResult?.data?.data.purchaseDate}
               {...register("purchaseDate", {
                 required: true,
               })}
+              id="purchaseDate"
+              type="date"
             />
           </div>
         </form>
