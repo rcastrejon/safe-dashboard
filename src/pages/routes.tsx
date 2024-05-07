@@ -26,12 +26,45 @@ export function RoutesPage() {
         accessorKey: "name",
       },
       {
-        header: "CURP",
-        accessorKey: "curp",
+        header: "Drive date",
+        accessorKey: "driveDate",
       },
       {
-        header: "License number",
-        accessorKey: "licenseNumber",
+        header: "Starting point",
+        cell: ({ row }) => {
+            const route = row.original;
+            return (
+                <span>
+                {route.startLongitude}, {route.startLatitude}
+                </span>
+            );
+        },
+      },
+      {
+        header: 'Destination',
+        cell: ({ row }) => {
+          const route = row.original;
+          return (
+            <span>
+              {route.endLongitude}, {route.endLatitude}
+            </span>
+          );
+        },
+      },
+      {
+        header: "Driver",
+        accessorKey: "assignment.driver.name",
+      },
+      {
+        header: "Vehicle",
+        cell: ({ row }) => {
+          const route = row.original;
+          return (
+            <span>
+              {route.assignment.vehicle.make} {route.assignment.vehicle.model}
+            </span>
+          );
+        },
       },
       {
         header: "Registration date",

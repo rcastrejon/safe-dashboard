@@ -110,7 +110,7 @@ function App() {
               {
                 name: "routes",
                 list: "/routes",
-                create: "/vehicles/new",
+                create: "/routes/new",
                 meta: {
                   parent: "dashboard",
                   icon: <RouteIcon />,

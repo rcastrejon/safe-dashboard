@@ -12,4 +12,5 @@ export type AssignmentPublic = Assignment & {
   driver: DriverPublic;
   vehicle: VehiclePublic;
   isActive: boolean;
+  labelName: DriverPublic & VehiclePublic;
 };

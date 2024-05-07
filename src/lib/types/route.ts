@@ -1,3 +1,6 @@
+import { AssignmentPublic } from "./assignment";
+import { DriverPublic } from "./driver";
+
 export type Route = {
     assignmentId: string;
     startLongitude: number;
@@ -7,8 +10,10 @@ export type Route = {
     name: string;
     driveDate: string;
     success: boolean | null;
-    problemDescription: string;
-    comments: string;
+    problemDescription: string | null;
+    comments: string | null;
+    assignment: AssignmentPublic;
+    driver: DriverPublic;
 }
 
 export type RoutePublic = Route & {
