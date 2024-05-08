@@ -41,6 +41,7 @@ import { VehiclesEditPage } from "./pages/vehicles.edit";
 import { VehiclesNewPage } from "./pages/vehicles.new";
 import { RoutesPage } from "./pages/routes";
 import { RoutesNewPage } from "./pages/routes.new";
+import { RoutesEditPage } from "./pages/routes.edit";
 
 function App() {
   return (
@@ -111,6 +112,7 @@ function App() {
                 name: "routes",
                 list: "/routes",
                 create: "/routes/new",
+                edit: '/routes/:id/edit',
                 meta: {
                   parent: "dashboard",
                   icon: <RouteIcon />,
@@ -180,6 +182,7 @@ function App() {
                 <Route path="routes">
                   <Route index element={<RoutesPage />} />
                   <Route path="new" element={<RoutesNewPage />} />
+                  <Route path=":id/edit" element={<RoutesEditPage />}/>
                 </Route>
               </Route>
               <Route
