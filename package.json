@@ -22,6 +22,7 @@
     "next-themes": "^0.3.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-hook-form": "^7.51.4",
     "react-router-dom": "^6.23.0",
     "sonner": "^1.4.41",
     "tailwind-merge": "^2.3.0",
@@ -57,5 +58,6 @@
   },
   "refine": {
     "projectId": "6Pwv7v-89Qq3Q-KB404D"
-  }
+  },
+  "packageManager": "pnpm@9.1.0+sha512.67f5879916a9293e5cf059c23853d571beaf4f753c707f40cb22bed5fb1578c6aad3b6c4107ccb3ba0b35be003eb621a16471ac836c87beb53f9d54bb4612724"
 }

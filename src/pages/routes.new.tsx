@@ -29,7 +29,7 @@ export function RoutesNewPage() {
     formState: { isSubmitting },
     register,
     handleSubmit,
-  } = useForm<Route, HttpError, RoutePublic>({
+  } = useForm<RoutePublic, HttpError, Route>({
     refineCoreProps: {
       errorNotification: (error, _, resource) => {
         if (!error) throw new Error("An error occurred");

@@ -10,6 +10,11 @@ export type Route = {
   comments: string | undefined;
 };
 
+export type RouteUpdate = Route & {
+  success: boolean | null;
+  problemDescription: string | null;
+};
+
 export type RoutePublic = Route & {
   id: number;
   registrationDate: string;

@@ -9,10 +9,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { AssignmentPublic } from "@/lib/types/assignment";
-import type { Route, RoutePublic } from "@/lib/types/route";
-import { handleFormError } from "@/lib/utils";
+import type { RoutePublic, RouteUpdate } from "@/lib/types/route";
+import { cn, handleFormError } from "@/lib/utils";
 import { type HttpError, useSelect } from "@refinedev/core";
 import { useForm } from "@refinedev/react-hook-form";
+import { type Control, Controller, useWatch } from "react-hook-form";
 import { Link } from "react-router-dom";
 
 export function RoutesEditPage() {
@@ -28,8 +29,9 @@ export function RoutesEditPage() {
     refineCore: { onFinish },
     formState: { isSubmitting },
     register,
+    control,
     handleSubmit,
-  } = useForm<Route, HttpError, RoutePublic>({
+  } = useForm<RoutePublic, HttpError, RouteUpdate>({
     refineCoreProps: {
       errorNotification: (error, _, resource) => {
         if (!error) throw new Error("An error occurred");
@@ -38,6 +40,34 @@ export function RoutesEditPage() {
     },
     shouldUseNativeValidation: true,
   });
+
+  function getStatusValueFromSucces(
+    success: boolean | null,
+  ): "pending" | "success" | "failed" {
+    if (success === null) {
+      return "pending";
+    }
+    return success ? "success" : "failed";
+  }
+
+  function getValuesFromStatusValue(status: string): boolean | null {
+    switch (status) {
+      case "success":
+        return true;
+      case "failed":
+        return false;
+      default:
+      case "pending":
+        return null;
+    }
+  }
+
+  async function handleFinish(data: RouteUpdate) {
+    if (data.success !== false) {
+      data.problemDescription = null;
+    }
+    await onFinish(data);
+  }
 
   return (
     <Card className="-mx-4 rounded-none border-x-0 sm:mx-0 sm:rounded-lg sm:border-x">
@@ -48,7 +78,7 @@ export function RoutesEditPage() {
         <form
           id="edit"
           className="gap grid gap-y-5"
-          onSubmit={handleSubmit(onFinish)}
+          onSubmit={handleSubmit(handleFinish)}
         >
           <div className="space-y-2">
             <Label htmlFor="name">Name</Label>
@@ -113,6 +143,29 @@ export function RoutesEditPage() {
               id="comments"
             />
           </div>
+          <div className="space-y-2">
+            <Label htmlFor="success">Status</Label>
+            <Controller
+              name="success"
+              control={control}
+              render={({ field: { value, onChange, ...rest } }) => (
+                <select
+                  {...rest}
+                  id="success"
+                  className="block w-full"
+                  value={getStatusValueFromSucces(value)}
+                  onChange={(e) =>
+                    onChange(getValuesFromStatusValue(e.target.value))
+                  }
+                >
+                  <option value="pending">Pending</option>
+                  <option value="success">Success</option>
+                  <option value="failed">Failed</option>
+                </select>
+              )}
+            />
+          </div>
+          <ProblemDescriptionField control={control} />
         </form>
       </CardContent>
       <CardFooter className="flex justify-end gap-6 border-t py-4">
@@ -127,5 +180,37 @@ export function RoutesEditPage() {
         </Button>
       </CardFooter>
     </Card>
+  );
+}
+
+function ProblemDescriptionField({
+  control,
+}: {
+  control: Control<RouteUpdate>;
+}) {
+  const success = useWatch({
+    control,
+    name: "success",
+    defaultValue: false,
+  });
+  const disabled = success !== false;
+  return (
+    <div className="space-y-2">
+      <Label
+        className={cn(disabled && "text-muted-foreground")}
+        htmlFor="problemDescription"
+      >
+        Problem description
+      </Label>
+      <Controller
+        name="problemDescription"
+        control={control}
+        disabled={disabled}
+        rules={{ required: true }}
+        render={({ field: { value, ...rest } }) => (
+          <Input {...rest} id="problemDescription" value={value ?? ""} />
+        )}
+      />
+    </div>
   );
 }
