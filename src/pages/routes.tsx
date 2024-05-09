@@ -30,25 +30,10 @@ export function RoutesPage() {
         accessorKey: "driveDate",
       },
       {
-        header: "Starting point",
-        cell: ({ row }) => {
-            const route = row.original;
-            return (
-                <span>
-                {route.startLongitude}, {route.startLatitude}
-                </span>
-            );
-        },
-      },
-      {
-        header: 'Destination',
-        cell: ({ row }) => {
-          const route = row.original;
-          return (
-            <span>
-              {route.endLongitude}, {route.endLatitude}
-            </span>
-          );
+        header: "Destination",
+        cell: ({ row: { original } }) => {
+          const coords = `${original.endLatitude}, ${original.endLongitude}`;
+          return <span>{coords}</span>;
         },
       },
       {
@@ -57,13 +42,9 @@ export function RoutesPage() {
       },
       {
         header: "Vehicle",
-        cell: ({ row }) => {
-          const route = row.original;
-          return (
-            <span>
-              {route.assignment.vehicle.make} {route.assignment.vehicle.model}
-            </span>
-          );
+        cell: ({ row: { original } }) => {
+          const vehicle = `${original.assignment.vehicle.make} ${original.assignment.vehicle.model}`;
+          return <span>{vehicle}</span>;
         },
       },
       {

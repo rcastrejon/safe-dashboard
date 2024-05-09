@@ -1,23 +1,22 @@
-import { AssignmentPublic } from "./assignment";
-import { DriverPublic } from "./driver";
+import type { AssignmentPublic } from "./assignment";
+import type { DriverPublic } from "./driver";
 
 export type Route = {
-    assignmentId: string;
-    startLongitude: number;
-    startLatitude: number;
-    endLongitude: number;
-    endLatitude: number;
-    name: string;
-    driveDate: string;
-    success: boolean | null;
-    problemDescription: string | null;
-    comments: string | null;
-    assignment: AssignmentPublic;
-    driver: DriverPublic;
-}
+  assignmentId: string;
+  endLongitude: string;
+  endLatitude: string;
+  name: string;
+  driveDate: string;
+  comments: string | undefined;
+};
 
 export type RoutePublic = Route & {
-    id: number;
-    registrationDate: string;
-  };
-  
+  id: number;
+  registrationDate: string;
+  startLongitude: string;
+  endLongitude: string;
+  success: boolean | null;
+  problemDescription: string | null;
+  driver: DriverPublic;
+  assignment: AssignmentPublic;
+};
