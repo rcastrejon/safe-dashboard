@@ -8,7 +8,15 @@ import routerBindings, {
   UnsavedChangesNotifier,
   DocumentTitleHandler,
 } from "@refinedev/react-router-v6";
-import { BookUser, Car, Home, Link, TicketSlash, Users } from "lucide-react";
+import {
+  BookUser,
+  Car,
+  Home,
+  Link,
+  RouteIcon,
+  TicketSlash,
+  Users,
+} from "lucide-react";
 import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import { authProvider } from "./auth-provider";
 import { AppShellLayout } from "./common/layouts/app-shell-layout";
@@ -27,6 +35,9 @@ import { DriversEditPage } from "./pages/drivers.edit";
 import { DriversNewPage } from "./pages/drivers.new";
 import { Invitations } from "./pages/invitations";
 import { NotFound } from "./pages/not-found";
+import { RoutesPage } from "./pages/routes";
+import { RoutesEditPage } from "./pages/routes.edit";
+import { RoutesNewPage } from "./pages/routes.new";
 import { UsersPage } from "./pages/users";
 import { VehiclesPage } from "./pages/vehicles";
 import { VehiclesEditPage } from "./pages/vehicles.edit";
@@ -97,6 +108,16 @@ function App() {
                   icon: <Link />,
                 },
               },
+              {
+                name: "routes",
+                list: "/routes",
+                create: "/routes/new",
+                edit: "/routes/:id/edit",
+                meta: {
+                  parent: "dashboard",
+                  icon: <RouteIcon />,
+                },
+              },
             ]}
             options={{
               syncWithLocation: true,
@@ -157,6 +178,11 @@ function App() {
                   <Route index element={<AssignmentsPage />} />
                   <Route path="new" element={<AssignmentsNewPage />} />
                   <Route path=":id/edit" element={<AssignmentsEditPage />} />
+                </Route>
+                <Route path="routes">
+                  <Route index element={<RoutesPage />} />
+                  <Route path="new" element={<RoutesNewPage />} />
+                  <Route path=":id/edit" element={<RoutesEditPage />} />
                 </Route>
               </Route>
               <Route
