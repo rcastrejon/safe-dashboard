@@ -1,11 +1,6 @@
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { FormCardFooter } from "@/common/form-card";
+import { Select } from "@/common/select";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import type { Assignment, AssignmentPublic } from "@/lib/types/assignment";
 import type { DriverPublic } from "@/lib/types/driver";
@@ -13,7 +8,6 @@ import type { VehiclePublic } from "@/lib/types/vehicle";
 import { handleFormError } from "@/lib/utils";
 import { type HttpError, useSelect } from "@refinedev/core";
 import { useForm } from "@refinedev/react-hook-form";
-import { Link } from "react-router-dom";
 
 export function AssignmentsEditPage() {
   const { options: driverOptions } = useSelect<DriverPublic>({
@@ -50,46 +44,46 @@ export function AssignmentsEditPage() {
       </CardHeader>
       <CardContent>
         <form
-          id="create"
+          id="edit"
           className="gap grid gap-y-5"
           onSubmit={handleSubmit(onFinish)}
         >
-          <div className="flex flex-col space-y-2">
+          <div className="space-y-2">
             <Label htmlFor="vehicleId">Vehicle VIN</Label>
-            <select
-              id="vehicleId"
+            <Select
               {...register("vehicleId", { required: true })}
+              id="vehicleId"
             >
-              {vehicleOptions?.map((option) => (
+              <option value="" disabled>
+                Select a vehicle
+              </option>
+              {vehicleOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
                 </option>
               ))}
-            </select>
+            </Select>
           </div>
-          <div className="flex flex-col space-y-2">
+          <div className="space-y-2">
             <Label htmlFor="driverId">Driver</Label>
-            <select id="driverId" {...register("driverId", { required: true })}>
-              {driverOptions?.map((option) => (
+            <Select {...register("driverId", { required: true })} id="driverId">
+              <option value="" disabled>
+                Select a driver
+              </option>
+              {driverOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
                 </option>
               ))}
-            </select>
+            </Select>
           </div>
         </form>
       </CardContent>
-      <CardFooter className="flex justify-end gap-6 border-t py-4">
-        <Link
-          className="font-medium text-primary text-sm underline-offset-4 hover:underline"
-          to="/assignments"
-        >
-          Cancel
-        </Link>
-        <Button form="create" type="submit" size="sm" disabled={isSubmitting}>
-          Save
-        </Button>
-      </CardFooter>
+      <FormCardFooter
+        cancelHref="/assignments"
+        saveForm="edit"
+        isSubmitting={isSubmitting}
+      />
     </Card>
   );
 }

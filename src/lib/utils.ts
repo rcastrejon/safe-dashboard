@@ -57,32 +57,45 @@ export class NetworkError extends Error implements HttpError {
   }
 }
 
-export async function apiFetch(
-  endpoint: `/${string}`,
+// biome-ignore lint/suspicious/noExplicitAny: data provider can't be typed
+export async function fetchApi<T = any>(
+  url: string,
   init?: RequestInit,
-): Promise<Response> {
-  // TODO: Allow passing the api url to this function.
-
-  // The env variable is injected by Vite is expected to not end with a slash,
-  // so we remove it if it's there by using the URL constructor and then
-  // getting the origin property.
-  const apiURL = new URL(import.meta.env.VITE_API_ORIGIN);
+): Promise<T> {
   // Set the Authorization header if a session token is present in local
   // storage.
   const { headers: headersInit, ...rest } = init ?? {};
   const headers = new Headers(headersInit);
-  const session = localStorage.getItem(import.meta.env.VITE_SESSION_TOKEN_KEY);
+  const session = getSessionFromLocalStorage();
   if (session) {
     headers.set("Authorization", `Bearer ${session}`);
   }
   try {
-    return await fetch(`${apiURL.origin}${endpoint}`, {
+    const response = await fetch(url, {
       headers,
       ...rest,
     });
+
+    if (!response.ok) {
+      const { error } = await response.json();
+      if (response.status === 422) {
+        return Promise.reject({
+          message:
+            "There are validation errors in the form. Please check the fields.",
+          statusCode: response.status,
+          errors: error,
+        } as HttpError);
+      }
+      return Promise.reject({
+        message: error ?? "Unexpected error",
+        statusCode: response.status,
+      } as HttpError);
+    }
+
+    return await response.json();
   } catch (_) {
     throw new NetworkError({
-      message: "Could not comunicate with the server",
+      message: "Could not comunicate with the server. Please try again later.",
       statusCode: -1,
     });
   }
@@ -92,13 +105,12 @@ export async function apiFetch(
  * This function is used to handle form errors. The API returns CREATE errors
  * in two forms:
  *
- * 1. A string that is the error message.
- * 2. An object with the field name as the key and the error message as the
+ * 1. An object with the field name as the key and the error message as the
  * value.
+ * 2. A string that is the error message.
  *
- * This function will return an object that can be used to display a notification
- * with the error message. If the error is not in the expected format, it will
- * return false, which means the error should be handled by the caller.
+ * This function will return an object that can be used to display a
+ * notification with the error message.
  */
 export function handleFormError(
   error: HttpError,
@@ -113,17 +125,10 @@ export function handleFormError(
     };
   }
 
-  if (typeof error.errors === "string") {
-    const message = resource
-      ? `Could not create ${resource}`
-      : "An error occurred";
-    return {
-      key: `form-error-${error.errors}`,
-      message,
-      description: error.errors,
-      type: "error",
-    };
-  }
+  const message = resource
+    ? `Could not create ${resource}`
+    : "An error occurred";
+
   // If the error is an object, we assume it's a validation error.
   // We get the first key and value from the object and use them to create
   // the notification.
@@ -135,10 +140,16 @@ export function handleFormError(
 
     return {
       key: `form-error-${field}`,
-      message: `Could not create ${resource}`,
+      message,
       description: value,
       type: "error",
     };
   }
-  return false;
+
+  return {
+    key: `form-error-${error.errors}`,
+    message,
+    description: error.message,
+    type: "error",
+  };
 }

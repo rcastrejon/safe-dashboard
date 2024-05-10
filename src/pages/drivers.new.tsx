@@ -1,18 +1,11 @@
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { FormCardFooter } from "@/common/form-card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { Driver, DriverPublic } from "@/lib/types/driver";
 import { handleFormError } from "@/lib/utils";
 import type { HttpError } from "@refinedev/core";
 import { useForm } from "@refinedev/react-hook-form";
-import { Link } from "react-router-dom";
 
 export function DriversNewPage() {
   const {
@@ -86,17 +79,11 @@ export function DriversNewPage() {
           </div>
         </form>
       </CardContent>
-      <CardFooter className="flex justify-end gap-6 border-t py-4">
-        <Link
-          className="font-medium text-primary text-sm underline-offset-4 hover:underline"
-          to="/drivers"
-        >
-          Cancel
-        </Link>
-        <Button form="create" type="submit" size="sm" disabled={isSubmitting}>
-          Save
-        </Button>
-      </CardFooter>
+      <FormCardFooter
+        cancelHref="/drivers"
+        saveForm="create"
+        isSubmitting={isSubmitting}
+      />
     </Card>
   );
 }

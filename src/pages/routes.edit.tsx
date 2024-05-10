@@ -1,11 +1,6 @@
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { FormCardFooter } from "@/common/form-card";
+import { Select } from "@/common/select";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { AssignmentPublic } from "@/lib/types/assignment";
@@ -13,11 +8,11 @@ import type { RoutePublic, RouteUpdate } from "@/lib/types/route";
 import { cn, handleFormError } from "@/lib/utils";
 import { type HttpError, useSelect } from "@refinedev/core";
 import { useForm } from "@refinedev/react-hook-form";
+import { format } from "date-fns";
 import { type Control, Controller, useWatch } from "react-hook-form";
-import { Link } from "react-router-dom";
 
 export function RoutesEditPage() {
-  const today = new Date().toISOString().split("T")[0];
+  const today = format(new Date(), "yyyy-MM-dd");
 
   const { options: assignmentOptions } = useSelect<AssignmentPublic>({
     resource: "assignments",
@@ -86,17 +81,20 @@ export function RoutesEditPage() {
           </div>
           <div className="space-y-2">
             <Label htmlFor="assignmentId">Assignment</Label>
-            <select
+            <Select
               {...register("assignmentId", { required: true })}
               id="assignmentId"
-              className="block w-full"
+              defaultValue=""
             >
+              <option value="" disabled>
+                Select an assignment
+              </option>
               {assignmentOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
                 </option>
               ))}
-            </select>
+            </Select>
           </div>
           <div className="space-y-2">
             <Label htmlFor="endLatitude">End latitude</Label>
@@ -149,36 +147,33 @@ export function RoutesEditPage() {
               name="success"
               control={control}
               render={({ field: { value, onChange, ...rest } }) => (
-                <select
+                <Select
                   {...rest}
                   id="success"
-                  className="block w-full"
                   value={getStatusValueFromSucces(value)}
                   onChange={(e) =>
                     onChange(getValuesFromStatusValue(e.target.value))
                   }
+                  required
                 >
+                  <option value="" disabled>
+                    Select a status
+                  </option>
                   <option value="pending">Pending</option>
                   <option value="success">Success</option>
                   <option value="failed">Failed</option>
-                </select>
+                </Select>
               )}
             />
           </div>
           <ProblemDescriptionField control={control} />
         </form>
       </CardContent>
-      <CardFooter className="flex justify-end gap-6 border-t py-4">
-        <Link
-          className="font-medium text-primary text-sm underline-offset-4 hover:underline"
-          to="/routes"
-        >
-          Cancel
-        </Link>
-        <Button form="edit" type="submit" size="sm" disabled={isSubmitting}>
-          Save
-        </Button>
-      </CardFooter>
+      <FormCardFooter
+        cancelHref="/routes"
+        saveForm="edit"
+        isSubmitting={isSubmitting}
+      />
     </Card>
   );
 }

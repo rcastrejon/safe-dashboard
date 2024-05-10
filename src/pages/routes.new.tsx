@@ -1,11 +1,6 @@
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { FormCardFooter } from "@/common/form-card";
+import { Select } from "@/common/select";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { AssignmentPublic } from "@/lib/types/assignment";
@@ -13,10 +8,10 @@ import type { Route, RoutePublic } from "@/lib/types/route";
 import { handleFormError } from "@/lib/utils";
 import { type HttpError, useSelect } from "@refinedev/core";
 import { useForm } from "@refinedev/react-hook-form";
-import { Link } from "react-router-dom";
+import { format } from "date-fns";
 
 export function RoutesNewPage() {
-  const today = new Date().toISOString().split("T")[0];
+  const today = format(new Date(), "yyyy-MM-dd");
 
   const { options: assignmentOptions } = useSelect<AssignmentPublic>({
     resource: "assignments",
@@ -56,17 +51,20 @@ export function RoutesNewPage() {
           </div>
           <div className="space-y-2">
             <Label htmlFor="assignmentId">Assignment</Label>
-            <select
+            <Select
               {...register("assignmentId", { required: true })}
               id="assignmentId"
-              className="block w-full"
+              defaultValue=""
             >
+              <option value="" disabled>
+                Select an assignment
+              </option>
               {assignmentOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
                 </option>
               ))}
-            </select>
+            </Select>
           </div>
           <div className="space-y-2">
             <Label htmlFor="endLatitude">End latitude</Label>
@@ -115,17 +113,11 @@ export function RoutesNewPage() {
           </div>
         </form>
       </CardContent>
-      <CardFooter className="flex justify-end gap-6 border-t py-4">
-        <Link
-          className="font-medium text-primary text-sm underline-offset-4 hover:underline"
-          to="/routes"
-        >
-          Cancel
-        </Link>
-        <Button form="create" type="submit" size="sm" disabled={isSubmitting}>
-          Save
-        </Button>
-      </CardFooter>
+      <FormCardFooter
+        cancelHref="/routes"
+        saveForm="create"
+        isSubmitting={isSubmitting}
+      />
     </Card>
   );
 }

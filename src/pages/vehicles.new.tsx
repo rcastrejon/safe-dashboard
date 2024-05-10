@@ -1,18 +1,11 @@
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { FormCardFooter } from "@/common/form-card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { VehicleInputs, VehiclePublic } from "@/lib/types/vehicle";
 import { handleFormError } from "@/lib/utils";
 import type { HttpError } from "@refinedev/core";
 import { useForm } from "@refinedev/react-hook-form";
-import { Link } from "react-router-dom";
 
 export function VehiclesNewPage() {
   const {
@@ -26,6 +19,8 @@ export function VehiclesNewPage() {
         // This is necesary to avoid sending the form data as JSON in the
         // Content-Type header. Instead, leave it empty so the browser can
         // automatically set it to the correct value.
+        //
+        // Check data-provider.ts for implementation details.
         headers: {},
       },
       errorNotification: (error, _, resource) => {
@@ -47,7 +42,7 @@ export function VehiclesNewPage() {
       formData.append(key, value.toString());
     }
 
-    // @ts-expect-error
+    // @ts-expect-error: the onFinish function only accepts VehicleInputs but we want to pass FormData to the data provider.
     await onFinish(formData);
   };
 
@@ -67,7 +62,7 @@ export function VehiclesNewPage() {
             <Input id="name" {...register("make", { required: true })} />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="model">Vehicle's model</Label>
+            <Label htmlFor="model">Model</Label>
             <Input
               className="w-full"
               id="model"
@@ -121,17 +116,11 @@ export function VehiclesNewPage() {
           </div>
         </form>
       </CardContent>
-      <CardFooter className="flex justify-end gap-6 border-t py-4">
-        <Link
-          className="font-medium text-primary text-sm underline-offset-4 hover:underline"
-          to="/vehicles"
-        >
-          Cancel
-        </Link>
-        <Button form="create" type="submit" size="sm" disabled={isSubmitting}>
-          Save
-        </Button>
-      </CardFooter>
+      <FormCardFooter
+        cancelHref="/vehicles"
+        saveForm="create"
+        isSubmitting={isSubmitting}
+      />
     </Card>
   );
 }

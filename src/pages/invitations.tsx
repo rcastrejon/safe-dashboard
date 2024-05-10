@@ -1,5 +1,10 @@
+import {
+  InfinityTable,
+  SimpleReactTableBody,
+  SimpleReactTableHeader,
+  TablePaginationFooter,
+} from "@/common/infinity-table";
 import { RowActionsMenuItem, RowActionsRoot } from "@/common/row-actions";
-import { InfinityTable, TablePaginationFooter } from "@/common/table";
 import { useClipboard } from "@/common/use-clipboard";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,14 +17,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { TableCell, TableHead } from "@/components/ui/table";
 import type { InvitationPublic } from "@/lib/types/invitation";
+import { handleFormError } from "@/lib/utils";
 import { useDelete } from "@refinedev/core";
 import { useModalForm } from "@refinedev/react-hook-form";
 import { useTable } from "@refinedev/react-table";
@@ -37,11 +37,12 @@ export function Invitations() {
         accessorKey: "id",
       },
       {
-        header: "User ID",
-        accessorKey: "userId",
+        header: "Created by",
+        accessorKey: "user.email",
       },
       {
         id: "actions",
+        header: () => <span className="sr-only">Actions</span>,
         cell: ({ row }) => {
           const invitation = row.original;
           return (
@@ -54,7 +55,7 @@ export function Invitations() {
                   })
                 }
               >
-                Copy invitation code
+                Copy code
               </RowActionsMenuItem>
               <RowActionsMenuItem
                 onClick={() =>
@@ -76,14 +77,7 @@ export function Invitations() {
     [deleteOne, copy],
   );
 
-  const {
-    getRowModel,
-    getHeaderGroups,
-    previousPage,
-    getCanPreviousPage,
-    nextPage,
-    getCanNextPage,
-  } = useTable<InvitationPublic>({
+  const table = useTable<InvitationPublic>({
     refineCoreProps: {
       pagination: {
         mode: "client",
@@ -104,6 +98,10 @@ export function Invitations() {
   } = useModalForm({
     refineCoreProps: {
       action: "create",
+      errorNotification: (error, _, resource) => {
+        if (!error) throw new Error("An error occurred");
+        return handleFormError(error, resource);
+      },
     },
   });
 
@@ -124,15 +122,18 @@ export function Invitations() {
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Add an invitation</DialogTitle>
+              <DialogTitle>
+                Are you sure you want to create an invitation?
+              </DialogTitle>
               <DialogDescription>
-                Are you sure you want to add a new invitation? Anyone with the
-                invitation code will be able to register an account.
+                Anyone with the invitation code will be able to register an
+                account. Invitations can be deleted at any time before they are
+                used.
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
               <DialogClose asChild>
-                <Button type="button" variant="secondary">
+                <Button type="button" variant="outline">
                   Cancel
                 </Button>
               </DialogClose>
@@ -145,48 +146,27 @@ export function Invitations() {
       </div>
       <div className="flow-root">
         <InfinityTable>
-          <TableHeader>
-            {getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead
-                      className="bg-muted/40 sm:last:pr-6 sm:first:pl-6"
-                      key={header.id}
-                    >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {getRowModel().rows.map((row) => (
-              <TableRow key={row.id}>
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell
-                    className="sm:last:pr-6 sm:first:pl-6"
-                    key={cell.id}
-                  >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
-          </TableBody>
+          <SimpleReactTableHeader table={table}>
+            {(header) => (
+              <TableHead className="bg-muted/40 sm:last:pr-6 sm:first:pl-6">
+                {header.isPlaceholder
+                  ? null
+                  : flexRender(
+                      header.column.columnDef.header,
+                      header.getContext(),
+                    )}
+              </TableHead>
+            )}
+          </SimpleReactTableHeader>
+          <SimpleReactTableBody table={table}>
+            {(cell) => (
+              <TableCell className="sm:last:pr-6 sm:first:pl-6">
+                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+              </TableCell>
+            )}
+          </SimpleReactTableBody>
         </InfinityTable>
-        <TablePaginationFooter
-          canNextPage={getCanNextPage()}
-          nextPage={nextPage}
-          canPreviousPage={getCanPreviousPage()}
-          previousPage={previousPage}
-        />
+        <TablePaginationFooter table={table} />
       </div>
     </>
   );
