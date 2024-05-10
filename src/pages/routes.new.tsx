@@ -8,9 +8,10 @@ import type { Route, RoutePublic } from "@/lib/types/route";
 import { handleFormError } from "@/lib/utils";
 import { type HttpError, useSelect } from "@refinedev/core";
 import { useForm } from "@refinedev/react-hook-form";
+import { format } from "date-fns";
 
 export function RoutesNewPage() {
-  const today = new Date().toISOString().split("T")[0];
+  const today = format(new Date(), "yyyy-MM-dd");
 
   const { options: assignmentOptions } = useSelect<AssignmentPublic>({
     resource: "assignments",

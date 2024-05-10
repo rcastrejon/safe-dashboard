@@ -124,7 +124,6 @@ function TodaysRoutesTable() {
           </TableHead>
         )}
       </SimpleReactTableHeader>
-
       <TableBody>
         {getRowModel()
           .rows.filter((row) => row.original.driveDate === today)

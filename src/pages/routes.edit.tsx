@@ -8,10 +8,11 @@ import type { RoutePublic, RouteUpdate } from "@/lib/types/route";
 import { cn, handleFormError } from "@/lib/utils";
 import { type HttpError, useSelect } from "@refinedev/core";
 import { useForm } from "@refinedev/react-hook-form";
+import { format } from "date-fns";
 import { type Control, Controller, useWatch } from "react-hook-form";
 
 export function RoutesEditPage() {
-  const today = new Date().toISOString().split("T")[0];
+  const today = format(new Date(), "yyyy-MM-dd");
 
   const { options: assignmentOptions } = useSelect<AssignmentPublic>({
     resource: "assignments",
