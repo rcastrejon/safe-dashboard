@@ -1,5 +1,4 @@
 import type { DataProvider } from "@refinedev/core";
-import qs from "query-string";
 import { fetchApi } from "./lib/utils";
 
 export const dataProvider = (apiUrl: string): DataProvider => ({
@@ -51,39 +50,4 @@ export const dataProvider = (apiUrl: string): DataProvider => ({
     };
   },
   getApiUrl: () => apiUrl,
-  custom: async ({ url, method, payload, query, headers }) => {
-    let requestUrl = `${url}?`;
-
-    if (query) {
-      requestUrl = `${requestUrl}&${qs.stringify(query)}`;
-    }
-
-    let data;
-    switch (method) {
-      case "put":
-      case "post":
-      case "patch":
-        data = await fetchApi(url, {
-          body: JSON.stringify(payload),
-          method: method.toUpperCase(),
-          headers,
-        });
-        break;
-      case "delete":
-        data = await fetchApi(url, {
-          method: "DELETE",
-          body: payload && JSON.stringify(payload),
-          headers,
-        });
-        break;
-      default:
-        data = await fetchApi(url, {
-          method: "GET",
-          headers,
-        });
-        break;
-    }
-
-    return { data };
-  },
 });
