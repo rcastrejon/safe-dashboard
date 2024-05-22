@@ -46,6 +46,7 @@
   "scripts": {
     "dev": "refine dev",
     "build": "tsc && refine build",
+    "build:vite": "tsc && vite build",
     "preview": "refine start",
     "refine": "refine",
     "check": "biome check .",
@@ -53,11 +54,7 @@
     "test": "vitest"
   },
   "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
+    "production": [">0.2%", "not dead", "not op_mini all"],
     "development": [
       "last 1 chrome version",
       "last 1 firefox version",
