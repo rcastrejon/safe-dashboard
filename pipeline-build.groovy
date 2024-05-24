@@ -11,7 +11,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building...'
-                sh 'pnpm run build'
+                sh 'pnpm run build:vite'
             }
         }
         stage('Test') {
@@ -26,7 +26,7 @@ pipeline {
         success {
             sh 'tar czf dist.tar.gz dist/'
             archiveArtifacts artifacts: 'dist.tar.gz', fingerprint: true, onlyIfSuccessful: true
-            build job: "${DEPLOY_PIPELINE}", parameters: [string(name: 'TAG', value: "${env.BUILD_NUMBER}")], propagate: true, wait: true
+            build job: "${DEPLOY_PIPELINE}", propagate: true, wait: true
         }
     }
 }

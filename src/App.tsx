@@ -44,7 +44,7 @@ import { VehiclesNewPage } from "./pages/vehicles.new";
 
 function App() {
   return (
-    <BrowserRouter basename={import.meta.env.BASE_URL}>
+    <BrowserRouter>
       <DevtoolsProvider>
         <Refine
           dataProvider={dataProvider(import.meta.env.VITE_API_ORIGIN)}
