@@ -38,6 +38,7 @@
         "noUnreachableSuper": "error",
         "noUnsafeFinally": "error",
         "noUnsafeOptionalChaining": "error",
+        "noUnusedImports": "warn",
         "noUnusedLabels": "error",
         "noUnusedVariables": "warn",
         "useExhaustiveDependencies": "warn",
@@ -82,6 +83,9 @@
         "useGetterReturn": "error",
         "useNamespaceKeyword": "error",
         "useValidTypeof": "error"
+      },
+      "nursery": {
+        "useSortedClasses": "warn"
       }
     }
   },

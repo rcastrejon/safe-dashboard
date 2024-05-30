@@ -1,104 +1,209 @@
+import { Toaster } from "@/components/ui/sonner";
 import { Authenticated, Refine } from "@refinedev/core";
 import { DevtoolsPanel, DevtoolsProvider } from "@refinedev/devtools";
-import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
 import routerBindings, {
   NavigateToResource,
   CatchAllNavigate,
   UnsavedChangesNotifier,
   DocumentTitleHandler,
 } from "@refinedev/react-router-v6";
-import dataProvider from "@refinedev/simple-rest";
+import {
+  BookUser,
+  Car,
+  Home,
+  Link,
+  RouteIcon,
+  TicketSlash,
+  Users,
+} from "lucide-react";
 import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
-import "./App.css";
-import { authProvider } from "./authProvider";
-import { Layout } from "./components/layout";
+import { authProvider } from "./auth-provider";
+import { AppShellLayout } from "./common/layouts/app-shell-layout";
+import { AuthLayout } from "./common/layouts/auth-layout";
+import { dataProvider } from "./data-provider";
+import { customTitleHandler } from "./lib/utils";
+import { notificationProvider } from "./notification-provider";
+import { Login } from "./pages/_auth.login";
+import { Register } from "./pages/_auth.register";
+import { AssignmentsPage } from "./pages/assignments";
+import { AssignmentsEditPage } from "./pages/assignments.edit";
+import { AssignmentsNewPage } from "./pages/assignments.new";
 import { Dashboard } from "./pages/dashboard";
+import { DriversPage } from "./pages/drivers";
+import { DriversEditPage } from "./pages/drivers.edit";
+import { DriversNewPage } from "./pages/drivers.new";
 import { Invitations } from "./pages/invitations";
-import { Login } from "./pages/login";
 import { NotFound } from "./pages/not-found";
-import { Register } from "./pages/register";
+import { RoutesPage } from "./pages/routes";
+import { RoutesEditPage } from "./pages/routes.edit";
+import { RoutesNewPage } from "./pages/routes.new";
+import { UsersPage } from "./pages/users";
+import { VehiclesPage } from "./pages/vehicles";
+import { VehiclesEditPage } from "./pages/vehicles.edit";
+import { VehiclesNewPage } from "./pages/vehicles.new";
 
 function App() {
   return (
     <BrowserRouter>
-      <RefineKbarProvider>
-        <DevtoolsProvider>
-          <Refine
-            dataProvider={dataProvider("https://api.fake-rest.refine.dev")}
-            routerProvider={routerBindings}
-            authProvider={authProvider}
-            resources={[
-              {
-                name: "dashboard",
-                list: "/",
-                meta: {
-                  label: "Dashboard",
-                },
+      <DevtoolsProvider>
+        <Refine
+          dataProvider={dataProvider(import.meta.env.VITE_API_ORIGIN)}
+          routerProvider={routerBindings}
+          authProvider={authProvider(import.meta.env.VITE_API_ORIGIN)}
+          notificationProvider={notificationProvider}
+          resources={[
+            {
+              name: "dashboard",
+              list: "/",
+              meta: {
+                label: "Dashboard",
+                icon: <Home />,
               },
-              {
-                name: "invitations",
-                list: "/invitations",
-                // show: "/invitations/show/:id",
-                // create: "/invitations/new",
+            },
+            {
+              name: "users",
+              list: "/users",
+              meta: {
+                parent: "dashboard",
+                icon: <Users />,
               },
-            ]}
-            options={{
-              syncWithLocation: true,
-              warnWhenUnsavedChanges: true,
-              useNewQueryKeys: true,
-              projectId: "6Pwv7v-89Qq3Q-KB404D",
-            }}
-          >
-            <Routes>
-              <Route
-                element={
-                  <Authenticated key="guard" fallback={<Outlet />}>
-                    <NavigateToResource resource="dashboard" />
-                  </Authenticated>
-                }
-              >
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-              </Route>
-              <Route
-                element={
-                  <Authenticated
-                    key="main"
-                    fallback={<CatchAllNavigate to="/login" />}
-                  >
-                    <Layout>
+            },
+            {
+              name: "invitations",
+              list: "/invitations",
+              meta: {
+                parent: "dashboard",
+                icon: <TicketSlash />,
+              },
+            },
+            {
+              name: "drivers",
+              list: "/drivers",
+              create: "/drivers/new",
+              edit: "/drivers/:id/edit",
+              meta: {
+                parent: "dashboard",
+                icon: <BookUser />,
+              },
+            },
+            {
+              name: "vehicles",
+              list: "/vehicles",
+              create: "/vehicles/new",
+              edit: "/vehicles/:id/edit",
+              meta: {
+                parent: "dashboard",
+                icon: <Car />,
+              },
+            },
+            {
+              name: "assignments",
+              list: "/assignments",
+              create: "/assignments/new",
+              edit: "/assignments/:id/edit",
+              meta: {
+                parent: "dashboard",
+                icon: <Link />,
+              },
+            },
+            {
+              name: "routes",
+              list: "/routes",
+              create: "/routes/new",
+              edit: "/routes/:id/edit",
+              meta: {
+                parent: "dashboard",
+                icon: <RouteIcon />,
+              },
+            },
+          ]}
+          options={{
+            syncWithLocation: true,
+            warnWhenUnsavedChanges: true,
+            useNewQueryKeys: true,
+            projectId: "6Pwv7v-89Qq3Q-KB404D",
+            disableTelemetry: true,
+          }}
+        >
+          <Routes>
+            <Route
+              element={
+                <Authenticated
+                  key="guard"
+                  fallback={
+                    <AuthLayout>
                       <Outlet />
-                    </Layout>
-                  </Authenticated>
-                }
-              >
-                <Route index element={<Dashboard />} />
-                <Route path="invitations">
-                  <Route index element={<Invitations />} />
-                </Route>
+                    </AuthLayout>
+                  }
+                >
+                  <NavigateToResource resource="dashboard" />
+                </Authenticated>
+              }
+            >
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+            </Route>
+            <Route
+              element={
+                <Authenticated
+                  key="main"
+                  fallback={<CatchAllNavigate to="/login" />}
+                >
+                  <AppShellLayout>
+                    <Outlet />
+                  </AppShellLayout>
+                </Authenticated>
+              }
+            >
+              <Route index element={<Dashboard />} />
+              <Route path="users">
+                <Route index element={<UsersPage />} />
               </Route>
-              <Route
-                element={
-                  <Authenticated
-                    key="error"
-                    fallback={<CatchAllNavigate to="/login" />}
-                  >
-                    <Layout>
-                      <Outlet />
-                    </Layout>
-                  </Authenticated>
-                }
-              >
-                <Route path="*" element={<NotFound />} />
+              <Route path="invitations">
+                <Route index element={<Invitations />} />
               </Route>
-            </Routes>
-            <RefineKbar />
-            <UnsavedChangesNotifier />
-            <DocumentTitleHandler />
-          </Refine>
-          <DevtoolsPanel />
-        </DevtoolsProvider>
-      </RefineKbarProvider>
+              <Route path="drivers">
+                <Route index element={<DriversPage />} />
+                <Route path="new" element={<DriversNewPage />} />
+                <Route path=":id/edit" element={<DriversEditPage />} />
+              </Route>
+              <Route path="vehicles">
+                <Route index element={<VehiclesPage />} />
+                <Route path="new" element={<VehiclesNewPage />} />
+                <Route path=":id/edit" element={<VehiclesEditPage />} />
+              </Route>
+              <Route path="assignments">
+                <Route index element={<AssignmentsPage />} />
+                <Route path="new" element={<AssignmentsNewPage />} />
+                <Route path=":id/edit" element={<AssignmentsEditPage />} />
+              </Route>
+              <Route path="routes">
+                <Route index element={<RoutesPage />} />
+                <Route path="new" element={<RoutesNewPage />} />
+                <Route path=":id/edit" element={<RoutesEditPage />} />
+              </Route>
+            </Route>
+            <Route
+              element={
+                <Authenticated
+                  key="error"
+                  fallback={<CatchAllNavigate to="/login" />}
+                >
+                  <AppShellLayout>
+                    <Outlet />
+                  </AppShellLayout>
+                </Authenticated>
+              }
+            >
+              <Route path="*" element={<NotFound />} />
+            </Route>
+          </Routes>
+          <UnsavedChangesNotifier />
+          <DocumentTitleHandler handler={customTitleHandler} />
+          <Toaster />
+        </Refine>
+        <DevtoolsPanel />
+      </DevtoolsProvider>
     </BrowserRouter>
   );
 }
